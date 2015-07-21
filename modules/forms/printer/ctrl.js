@@ -1,4 +1,4 @@
-app.lazy.controller('PrinterSetupCtrl', function($scope, $http, config, Auth){
+app.lazy.controller('PrinterSetupCtrl', function($scope, $http, $compile, config, Auth){
 	var tools = $scope.tools = {
 		init: function(){
 			Auth.init().then(function(){
@@ -7,8 +7,8 @@ app.lazy.controller('PrinterSetupCtrl', function($scope, $http, config, Auth){
 		},
 		load: function(req){
 			$http.get(config.parse.root+'/classes/udEmail').success(function(data){
-				$scope.accounts = data;
-			})	
+				$scope.accounts = data.results;
+			})
 		},
 		view: function(view){
 			if(view)
@@ -16,5 +16,6 @@ app.lazy.controller('PrinterSetupCtrl', function($scope, $http, config, Auth){
 			return '/modules/forms/printer/'+$scope.view+'.html';
 		}
 	}
+	
 	it.PrinterSetupCtrl = $scope;
 });
