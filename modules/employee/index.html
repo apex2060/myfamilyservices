@@ -1,0 +1,49 @@
+<div class="container">
+	<div class="well">
+		<h1>Employee Portal</h1>
+		<div class="row">
+			<div class="col-md-4">
+				<div class="panel panel-primary">
+					<div class="panel-heading">Company Links</div>
+					<div class="list-group">
+						<a class="list-group-item" target="_new" href="https://webmail.dignpave.com/owa/">Webmail</a>
+						<a class="list-group-item" target="_new" href="https://jhamilton.ecmserp.com/ess">HRSS</a>
+						<!--<a class="list-group-item" href="#">Employee Directory</a>-->
+						<!--<a class="list-group-item" href="#">Job Locations</a>-->
+						<!--<a class="list-group-item" href="#/employee/profile">Manage Profile</a>-->
+						<!--<a class="list-group-item" href="#/employee/settings">Manage Settings</a>-->
+					</div>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="panel panel-primary">
+					<div class="panel-heading">Support Links</div>
+					<div class="list-group">
+						<a class="list-group-item" target="_new" href="https://docs.google.com/forms/d/19dkkPO5Xje8Livx4muBlBViXvCkanmwM4X1mQuP8nEM/viewform">Request IT Support</a>
+						<a class="list-group-item" target="_new" href="https://docs.google.com/forms/d/1Ad5eVFU1ChifvRNan9tRjFK77rELHrrzeHfuv-uH3Ug/viewform">Request IT Equipment</a>
+					</div>
+				</div>
+			</div>
+			<!--<div class="col-md-4">-->
+			<!--	<div class="panel panel-primary">-->
+			<!--		<div class="panel-heading">Tools In Development</div>-->
+			<!--		<div class="list-group">-->
+			<!--			<a class="list-group-item" href="#/scalehouse">Scale House</a>-->
+			<!--			<a class="list-group-item" href="#/equipment">Equipment</a>-->
+			<!--			<a class="list-group-item" href="#/safety">Safety</a>-->
+			<!--			<a class="list-group-item" href="#/guest/apply">online Application</a>-->
+			<!--		</div>-->
+			<!--	</div>-->
+			<!--</div>-->
+			<div class="col-md-4" ng-show="user.is('Admin')">
+				<div class="panel panel-primary">
+					<div class="panel-heading">Admin</div>
+					<div class="list-group">
+						<a class="list-group-item" href="#/admin/outpost">Outposts</a>
+						<a class="list-group-item" href="#/admin/roles">Roles</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

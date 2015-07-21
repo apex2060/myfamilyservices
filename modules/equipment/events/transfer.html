@@ -1,0 +1,21 @@
+<td>Transfer</td>
+<td><a editable-date="event.date">{{ event.date || 'Empty' }}</a></td>
+<td ng-show="event.edit">
+	<input type="text" class="form-control" ng-model="event.to" 			placeholder="New Location"><br>
+	<input type="text" class="form-control" ng-model="event.job" 			placeholder="New Job #"><br>
+	<input type="text" class="form-control" ng-model="event.inspectedBy" 	placeholder="Inspected By"><br>
+	<input type="text" class="form-control" ng-model="event.miles" 			placeholder="Miles / Hours"><br>
+	<input type="text" class="form-control" ng-model="event.receivedBy" 	placeholder="Received By"><br>
+</td>
+<td ng-hide="event.edit">
+	To: 			<a editable-text="event.to">{{ event.to 					|| 'Empty' }}</a><br>
+	Job: 			<a editable-text="event.job">{{ event.job 					|| 'Empty' }}</a><br>
+	InspectedBy: 	<a editable-text="event.inspectedBy">{{ event.inspectedBy 	|| 'Empty' }}</a><br>
+	Miles: 			<a editable-number="event.miles">{{ event.miles 			|| 'Empty' }}</a><br>
+	ReceivedBy: 	<a editable-text="event.receivedBy">{{ event.receivedBy 	|| 'Empty' }}</a><br>
+</td>
+<td>
+	<a class="btn btn-sm btn-success" ng-show="event.edit" ng-click="event.edit=false">	<i class="fa fa-floppy-o"></i></a>
+	<a class="btn btn-sm btn-warning" ng-hide="event.edit" ng-click="event.edit=true">	<i class="fa fa-pencil"></i></a>
+	<a class="btn btn-sm btn-danger" ng-click="tools.equipment.removeEvent(event)">		<i class="fa fa-trash"></i></a>
+</td>

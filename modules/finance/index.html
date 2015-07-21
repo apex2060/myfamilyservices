@@ -1,0 +1,29 @@
+<div class="container" ng-controller="FinanceCtrl" ng-init="tools.init()">
+	<div class="row">
+		<div class="col-md-6">
+			<div class="list-group">
+				<a href="#" class="list-group-item active">
+				 	Accounts
+				</a>
+				<a href="#" class="list-group-item" ng-repeat="account in bank.accounts" title="{{account.subtype}}">
+					<span>{{account.meta.name}} - ({{account.meta.number}})</span>
+					<span class="badge">{{account.balance.available | currency}}</span>
+				</a>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-3"></div>
+		<div class="col-md-9">
+			<div class="list-group">
+				<a href="#" class="list-group-item active">
+				 	Transactions
+				</a>
+				<a href="#" class="list-group-item" ng-repeat="tran in bank.transactions" title="{{tran.pending}}">
+					<span>{{tran.name}} - ({{tran.meta.location.city}}, {{tran.meta.location.state}})</span>
+					<span class="badge">{{tran.amount | currency}}</span>
+				</a>
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,10 @@
+
+
+.slideUp {
+	transition: .5s linear all;
+	height: 80px;
+	overflow: hidden;
+}
+.slideUp.ng-hide {
+	height: 0;
+}

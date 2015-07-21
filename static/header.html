@@ -1,0 +1,34 @@
+<nav class="navbar navbar-inverse navbar-fixed-top">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="#/main">{{config.company.name}}</a>
+		</div>
+		<div id="navbar" class="navbar-collapse collapse">
+			<ul class="nav navbar-nav navbar-right">
+				<li><a href="#/main/projects">Projects</a></li>
+				<li><a href="#/main/services">Services</a></li>
+				<li><a href="#/main/contact">Contact</a></li>
+				<!--<li><google-plus-signin clientid="693915073881-8lq8g0q78rhabgmmhf86prf34gcaeeff.apps.googleusercontent.com" scopes="https://www.googleapis.com/auth/drive.file" request_visible_actions="https://www.googleapis.com/auth/drive.file" ng-hide="user"></google-plus-signin></li>-->
+				<li ng-hide="user.objectId"><a ng-click="tools.user.login()">Login</a></li>
+				<li class="dropdown" ng-show="user.objectId">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><img class="profile" ng-src="{{user.profile.image.url}}"> {{user.profile.displayName}} <span class="caret"></span></a>
+					<ul class="dropdown-menu" role="menu">
+						<li><a href="http://mail.dignpave.com">Email</a></li>
+						<li><a href="#/work/directory">Directory</a></li>
+						<li><a href="#/employee">Employee Portal</a></li>
+						<li ng-show="visitor.is('Manager')"><a href="#/admin/roles">Users &amp; Roles</a></li>
+						<li class="divider"></li>
+						<li><a ng-click="tools.clearStorage()">Clear Storage</a></li>
+						<li><a ng-click="tools.user.logout()">Logout</a></li>
+					</ul>
+				</li>
+			</ul>
+		</div>
+	</div>
+</nav>

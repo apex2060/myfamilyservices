@@ -1,0 +1,11 @@
+<div class="row" ng-init="tools.crusher.init()">
+	<div class="col-md-3">
+		<div class="list-group">
+			<a class="list-group-item active">Crusher</a>
+			<a class="list-group-item" ng-click="tools.crusher.url('crushLog')">Daily Production Log</a>
+			<a class="list-group-item" ng-click="tools.crusher.url('genLog')">Generator Inspection</a>
+			<a class="list-group-item" ng-click="tools.crusher.url('haulLog')">Haul Roads</a>
+		</div>
+	</div>
+	<div class="col-md-9" ng-include="tools.crusher.url()"></div>
+</div>

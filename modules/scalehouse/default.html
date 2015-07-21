@@ -1,0 +1,80 @@
+<div class="container" ng-init="tools.reports.init()">
+	<div class="well">
+		<h1>Scale House Dashboard</h1>
+	</div>
+	<div class="row">
+		<div class="col-md-6">
+			<div class="well parent">
+				<h3>Materials: {{materials.length}}</h3>
+				<h3>Truck Companies: {{companies.length}}</h3>
+				<h3>Contracts: {{contracts.length}}</h3>
+				<h3>Vehicles: {{vehicles.length}}</h3>
+				<!--<h3>Tickets Issued: {{tickets.length}}</h3>-->
+				<!--<ul class="hide">-->
+				<!--	<li>Contract Limits</li>-->
+				<!--	<li>Material Overview: Hauled, Available, Contracted</li>-->
+				<!--	<li>Filter by customer</li>-->
+				<!--	<li>Billing: Customer, PO, Date Range, Material</li>-->
+				<!--</ul>-->
+				<a class="btn btn-warning btn-block" ng-click="tools.ticket.localSync()">Run Sync Report</a>
+			</div>
+		</div>
+		<div class="col-md-6">
+			<div class="well">
+				<div id="materialChart" style="width: 100%; height: 300px;"></div>
+				<a class="btn btn-block btn-info" ng-click="tools.reports.updateMaterial()">Run Material Report</a>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+			<div class="well">
+				<div id="ticketChart" style="width: 100%; height: 500px;"></div>
+			</div>
+		</div>
+	</div>
+	<nav class="navbar navbar-default">
+			<div class="container-fluid">
+				<!-- Brand and toggle get grouped for better mobile display -->
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+						<span class="sr-only">Toggle navigation</span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+      				<a class="navbar-brand">Contracts</a>
+				</div>
+		
+				<!-- Collect the nav links, forms, and other content for toggling -->
+				<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+					<ul class="nav navbar-nav navbar-right">
+						<li class="dropdown">
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">View Options <span class="caret"></span></a>
+							<ul class="dropdown-menu" role="menu">
+								<li><a ng-click="tools.reports.contractChart('guage')">Guage</a>
+								</li>
+								<li><a ng-click="tools.reports.contractChart('pie')">Pie</a>
+								</li>
+								<li class="divider"></li>
+								<li><a href="#">Close</a>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+				<!-- /.navbar-collapse -->
+			</div>
+			<!-- /.container-fluid -->
+		</nav>
+	<div class="row" ng-show="contractCharts">
+		<div class="col-md-3" ng-repeat="contract in contracts">
+			<div class="well">
+				<h3>{{contract.name}}</h3>
+				<div ng-repeat="material in contract.materials">
+					<div id="{{contract.objectId}}-{{material.ref}}"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

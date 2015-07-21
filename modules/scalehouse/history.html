@@ -1,0 +1,46 @@
+<div class="well">
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th>Contract</th>
+				<th>Material</th>
+				<th>Truck Co.</th>
+				<th>Vehicle</th>
+				<th>Clear</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<th><select class="form-control" ng-options="item.objectId as item.name for item in contracts" ng-model="search.contract"></th>
+				<th><select class="form-control" ng-options="item.objectId as item.name for item in materials" ng-model="search.material"></th>
+				<th><select class="form-control" ng-options="item.objectId as item.name for item in companies" ng-model="search.company"></th>
+				<th><select class="form-control" ng-options="item.objectId as item.vId for item in vehicles" ng-model="search.vehicle"></th>
+				<th><a class="btn btn-block btn-danger" ng-click="search = {}">Clear Filters</a></th>
+			</tr>
+		</tbody>
+	</table>
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th>Ticket</th>
+				<th>Contract</th>
+				<th>Material</th>
+				<th>Vehicle</th>
+				<th>Tons</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr class="zoomIn" ng-repeat="ticket in tickets | filter: search" ng-init="tools.history.contractMaterial(ticket)">
+				<td><a href="#/scalehouse/receiptInternal/{{ticket.objectId}}">{{ticket.objectId}}</a></td>
+				<td>{{ticket.summary.contract}}</td>
+				<td>{{ticket.summary.material}}</td>
+				<td>{{ticket.summary.vehicle}}</td>
+				<td>{{ticket.summary.tons}}</td>
+			</tr>
+			<tr>
+				<th colspan="4">Totals: </th>
+				<th table-math="5">{{math.sum}} | {{math.average}}</th>
+			</tr>
+		</tbody>
+	</table>
+</div>

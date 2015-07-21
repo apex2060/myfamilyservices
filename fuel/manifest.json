@@ -1,0 +1,20 @@
+{
+	"lang": "en",
+	"name": "Fuel Logs",
+	"short_name": "Fuel Log",
+	"icons": [{
+		"src": "/fuel/static/fuel-64.jpg",
+		"sizes": "64x64"
+	}, {
+		"src": "/fuel/static/fuel-128.jpg",
+		"sizes": "128x128"
+	}, {
+		"src": "/fuel/static/fuel-192.jpg",
+		"sizes": "192x192"
+	}],
+	"scope": "/fuel",
+	"start_url": "/fuel/#/fuel",
+	"display": "standalone",
+	"orientation": "portrait",
+	"theme_color": "red"
+}

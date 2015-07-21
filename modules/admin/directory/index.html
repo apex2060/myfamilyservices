@@ -1,0 +1,35 @@
+<div class="container" ng-controller="WorkDirectoryCtrl">
+	<div class="well">
+		<a class="btn btn-block btn-info" ng-click="tools.init()" ng-hide="directory">Load Directory</a>
+	</div>
+	<div class="row">
+		<div class="col-md-3">
+			<ul class="list-group">
+				<li class="list-group-item active">User Defined Emails</li>
+				<li class="list-group-item" ng-repeat="user in udEmails" ng-click="tools.user.new(user)">{{user.name}}</li>
+			</ul>
+		</div>
+		<div class="col-md-3">
+			<ul class="list-group">
+				<li class="list-group-item active">Google Directory</li>
+				<li class="list-group-item" ng-repeat="user in directory">{{user.name.fullName}}</li>
+				<li class="list-group-item" ng-click="tools.user.new()">New User</li>
+			</ul>
+		</div>
+		<div class="col-md-6">
+			<div class="row">
+				<div class="col-md-4" ng-repeat="group in groups">
+					<ul class="list-group">
+						<li class="list-group-item active">{{group.name}}</li>
+						<li class="list-group-item" ng-repeat="member in group.members">{{member.email}}</li>
+					</ul>
+				</div>
+				<div class="col-md-4">
+					<ul class="list-group">
+						<li class="list-group-item active" ng-click="tools.group.new()">New Group</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

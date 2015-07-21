@@ -1,0 +1,298 @@
+<div class="container white" ng-controller="GuestApplyCtrl">
+	<h1>Apply Online</h1>
+	<form ng-submit="form.apply(appli)">
+		<div class="panel-group" id="application" role="tablist" aria-multiselectable="true">
+			<!--CONTACT INFOMRATION-->
+			<div class="panel panel-default">
+				<div class="panel-heading" role="tab" id="headingTwo">
+					<h4 class="panel-title">
+						<a class="collapsed" data-toggle="collapse" data-parent="#application" href="#identification" aria-expanded="true" aria-controls="identification">Contact Information</a>
+					</h4>
+				</div>
+				<div id="identification" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingTwo">
+					<div class="panel-body">
+						<div class="row">
+							<div class="col-md-6">
+								<div class="row">
+									<label for="appFirstName" class="col-sm-3 control-label">First Name</label>
+									<div class="col-sm-9">
+										<input type="text" class="form-control" id="appFirstName" placeholder="First Name" ng-model="appli.contact.firstName">
+									</div>
+								</div>
+								<div class="row">
+									<label for="appLastName" class="col-sm-3 control-label">Last Name</label>
+									<div class="col-sm-9">
+										<input type="text" class="form-control" id="appLastName" placeholder="Last Name" ng-model="appli.contact.lastName">
+									</div>
+								</div>
+								<div class="row">
+									<label for="appPhone" class="col-sm-3 control-label">Phone</label>
+									<div class="col-sm-9">
+										<input type="tel" class="form-control" id="appPhone" placeholder="Phone" ng-model="appli.contact.phone">
+									</div>
+								</div>
+								<div class="row">
+									<label for="appEmail" class="col-sm-3 control-label">Email</label>
+									<div class="col-sm-9">
+										<input type="email" class="form-control" id="appEmail" placeholder="Email" ng-model="appli.contact.email">
+									</div>
+								</div>
+								<div class="row">
+									<label for="appBirthdate" class="col-sm-3 control-label">Birthdate</label>
+									<div class="col-sm-9">
+										<input type="date" class="form-control" id="appBirthdate" placeholder="Birthdate" ng-model="appli.contact.birthdate">
+									</div>
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="row">
+									<label for="appAddress" class="col-sm-3 control-label">Street Address</label>
+									<div class="col-sm-9">
+										<input type="text" class="form-control" id="appAddress" placeholder="Street Address" ng-model="appli.contact.address.street">
+									</div>
+								</div>
+								<div class="row">
+									<label for="appCity" class="col-sm-3 control-label">City</label>
+									<div class="col-sm-9">
+										<input type="text" class="form-control" id="appCity" placeholder="City" ng-model="appli.contact.address.city">
+									</div>
+								</div>
+								<div class="row">
+									<label for="appState" class="col-sm-3 control-label">State</label>
+									<div class="col-sm-9">
+										<input type="text" class="form-control" id="appState" placeholder="State" ng-model="appli.contact.address.state">
+									</div>
+								</div>
+								<div class="row">
+									<label for="appZip" class="col-sm-3 control-label">Zip</label>
+									<div class="col-sm-9">
+										<input type="text" class="form-control" id="appZip" placeholder="Zip" ng-model="appli.contact.address.zip">
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!--POSITION INFORMATION-->
+			<div class="panel panel-default">
+				<div class="panel-heading" role="tab" id="headingOne">
+					<h4 class="panel-title">
+						<a data-toggle="collapse" data-parent="#application" href="#position" aria-expanded="false" aria-controls="position">Position Details</a>
+					</h4>
+				</div>
+				<div id="position" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+					<div class="panel-body">
+						<div class="row">
+							<!--<div class="col-md-6">-->
+							<!--	<label for="appPositionType" class="control-label">Desired Position(s)</label>-->
+							<!--	<select class="form-control" id="appPositionType" placeholder="Desired Work Location" ng-model="appli.position.types" size="15" multiple>-->
+							<!--		<option ng-repeat="position in positions" value="{{position.objectId}}">{{position.title}}</option>-->
+							<!--	</select>-->
+							<!--</div>-->
+							<!--<div class="col-md-6">-->
+							<!--	<label for="appPositionLocation" class="control-label">Work Location</label>-->
+							<!--	<select class="form-control" id="appPositionLocation" placeholder="Desired Work Location" ng-model="appli.position.locations" size="15" multiple>-->
+							<!--		<option ng-repeat="outpost in outposts" value="{{outpost.objectId}}">{{outpost.title}}</option>-->
+							<!--	</select>-->
+							<!--</div>-->
+							<!--<div class="col-md-12">-->
+							<!--	<div class="alert alert-info" role="alert">-->
+							<!--		<p>You can select multiple by pressing 'CTRL' on your keyboard and clicking on the other desired options.</p>-->
+							<!--	</div>-->
+							<!--</div>-->
+							
+							
+							<div class="col-md-12">
+								<h3>Desired Position</h3>
+								<!--<div class="alert alert-warning" role="alert">Specific position being applied for - Check only one position.  List other skills in remarks.</div>-->
+							</div>
+							<div class="col-md-4" ng-repeat="position in positions">
+								<label>
+									<input type="checkbox" ng-checked="form.position.isChecked(position)" ng-click="form.position.toggle(position)"> {{position.title}}
+								</label>
+							</div>
+						</div>
+						<hr>
+						<div class="row">
+							<div class="col-md-12">
+								<h3>Work Locations</h3>
+							</div>
+							<div class="col-md-4" ng-repeat="outpost in outposts">
+								<label>
+									<input type="checkbox" ng-checked="form.location.isChecked(outpost)" ng-click="form.location.toggle(outpost)"> {{outpost.title}}
+								</label>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!--WORK HISTORY-->
+			<div class="panel panel-default">
+				<div class="panel-heading" role="tab" id="headingThree">
+					<h4 class="panel-title">
+						<a class="collapsed" data-toggle="collapse" data-parent="#application" href="#history" aria-expanded="false" aria-controls="history">Employment History</a>
+					</h4>
+				</div>
+				<div id="history" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+					<div class="panel-body">
+						<div class="row">
+							<div class="col-md-12">
+								<h3>Employment History</h3>
+								<p>Complete the information requested below for the last three jovs you have held, most recent job first.</p>
+							</div>
+							<!--Past Jobs-->
+							<div class="col-md-12">
+								<div class="row" ng-repeat="job in appli.employment.jobs">
+									<h4>Job {{$index+1}}</h4>
+									<div class="col-md-6">
+										<div class="row">
+											<label class="col-sm-3 control-label">Company Name</label>
+											<div class="col-sm-9">
+												<input type="text" class="form-control" placeholder="Company Name" ng-model="job.company">
+											</div>
+										</div>
+										<div class="row">
+											<label class="col-sm-3 control-label">Phone</label>
+											<div class="col-sm-9">
+												<input type="tel" class="form-control" placeholder="Phone" ng-model="job.phone">
+											</div>
+										</div>
+										<div class="row">
+											<label class="col-sm-3 control-label">Address</label>
+											<div class="col-sm-9">
+												<textarea class="form-control" placeholder="Address" ng-model="job.address"></textarea>
+											</div>
+										</div>
+										<div class="row">
+											<label class="col-sm-3 control-label">Supervisor Name</label>
+											<div class="col-sm-9">
+												<input type="text" class="form-control" placeholder="Supervisor Name" ng-model="job.supervisor">
+											</div>
+										</div>
+										<div class="row">
+											<label class="col-sm-3 control-label">Supervisor Email</label>
+											<div class="col-sm-9">
+												<input type="email" class="form-control" placeholder="Supervisor Email" ng-model="job.email">
+											</div>
+										</div>
+									</div>
+									<div class="col-md-6">
+										<div class="row">
+											<label class="col-sm-3 control-label">Type Of Work</label>
+											<div class="col-sm-9">
+												<input type="text" class="form-control" placeholder="Type Of Work" ng-model="job.position">
+											</div>
+										</div>
+										<div class="row">
+											<label class="col-sm-3 control-label">Start Date</label>
+											<div class="col-sm-9">
+												<input type="date" class="form-control" placeholder="Start Date" ng-model="job.start">
+											</div>
+										</div>
+										<div class="row">
+											<label class="col-sm-3 control-label">End Date</label>
+											<div class="col-sm-9">
+												<input type="date" class="form-control" placeholder="End Date" ng-model="job.end">
+											</div>
+										</div>
+										<div class="row">
+											<label class="col-sm-3 control-label">Reason For Leaving</label>
+											<div class="col-sm-9">
+												<input type="text" class="form-control" placeholder="Reason For Leaving" ng-model="job.leaveReason">
+											</div>
+										</div>
+									</div>
+								</div>
+								<a class="btn btn-success btn-block" ng-click="form.employment.add()">Add A Job</a>
+							</div>
+							<!--JHCC Previous Work-->
+							<div class="col-md-12">
+								<div class="row">
+									<div class="col-md-12">
+										<label>
+											<input type="checkbox" ng-model="appli.employment.jhcc.history"> Check if you have worked at James Hamilton Construction Co. before.
+										</label>
+									</div>
+									<div class="col-md-6" ng-show="appli.employment.jhcc.history">
+										<div class="row">
+											<label class="col-sm-3 control-label">Supervisor Name</label>
+											<div class="col-sm-9">
+												<input type="text" class="form-control" placeholder="Supervisor Name" ng-model="appli.employment.jhcc.supervisor">
+											</div>
+										</div>
+										<div class="row">
+											<label class="col-sm-3 control-label">Type Of Work</label>
+											<div class="col-sm-9">
+												<input type="text" class="form-control" placeholder="Type Of Work" ng-model="appli.employment.jhcc.position">
+											</div>
+										</div>
+									</div>
+									<div class="col-md-6" ng-show="appli.employment.jhcc.history">
+										<div class="row">
+											<label class="col-sm-3 control-label">Start Date</label>
+											<div class="col-sm-9">
+												<input type="date" class="form-control" placeholder="Start Date" ng-model="appli.employment.jhcc.start">
+											</div>
+										</div>
+										<div class="row">
+											<label class="col-sm-3 control-label">End Date</label>
+											<div class="col-sm-9">
+												<input type="date" class="form-control" placeholder="End Date" ng-model="appli.employment.jhcc.end">
+											</div>
+										</div>
+										<div class="row">
+											<label class="col-sm-3 control-label">Reason For Leaving</label>
+											<div class="col-sm-9">
+												<input type="text" class="form-control" placeholder="Reason For Leaving" ng-model="appli.employment.jhcc.leaveReason">
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!--ADDITIONAL INFORMATION-->
+			<div class="panel panel-default">
+				<div class="panel-heading" role="tab" id="headingThree">
+					<h4 class="panel-title">
+						<a class="collapsed" data-toggle="collapse" data-parent="#application" href="#additional" aria-expanded="false" aria-controls="additional">Additional Information</a>
+					</h4>
+				</div>
+				<div id="additional" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+					<div class="panel-body">
+						Additional Info Form
+					</div>
+				</div>
+			</div>
+			<!--EMPLOYMENT AGREEMENT-->
+			<div class="panel panel-default">
+				<div class="panel-heading" role="tab" id="headingThree">
+					<h4 class="panel-title">
+						<a class="collapsed" data-toggle="collapse" data-parent="#application" href="#agreement" aria-expanded="false" aria-controls="agreement">Employment Agreement</a>
+					</h4>
+				</div>
+				<div id="agreement" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+					<div class="panel-body">
+						Sig. Conditions Of Emp. Summary
+					</div>
+				</div>
+			</div>
+			<!--VOLUNTARY INFORMATION-->
+			<div class="panel panel-default">
+				<div class="panel-heading" role="tab" id="headingThree">
+					<h4 class="panel-title">
+						<a class="collapsed" data-toggle="collapse" data-parent="#application" href="#voluntaryInfo" aria-expanded="false" aria-controls="voluntaryInfo">Voluntary Information</a>
+					</h4>
+				</div>
+				<div id="voluntaryInfo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+					<div class="panel-body">
+						Voluntary Info Form
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+</div>

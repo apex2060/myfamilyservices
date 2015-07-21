@@ -1,0 +1,20 @@
+<div class="well" ng-init="tools.vehicle.init()">
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th>#</th>
+				<th>Vehicle</th>
+				<th>Tare</th>
+				<th>Remove</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="vehicle in vehicles">
+				<td>{{$index+1}}</td>
+				<td>{{vehicle.vId}}</td>
+				<td>{{vehicle.tare}}</td>
+				<td><a class="btn btn-xs btn-danger" ng-click="tools.vehicle.delete(vehicle)" ng-show="user.is('Admin')"><i class="fa fa-trash"></i></a></td>
+			</tr>
+		</tbody>
+	</table>
+</div>

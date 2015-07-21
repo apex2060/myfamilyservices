@@ -1,0 +1,37 @@
+<div id="wrapper" ng-class="{toggled: hideSidebar}" ng-controller="ScaleCtrl">
+	<div id="sidebar-wrapper">
+		<ul class="sidebar-nav">
+			<li class="bread">
+				<a href="#/">Home</a> /
+				<a href="#/scalehouse">Scale House</a>
+			</li>
+			<li>
+				<a href="#/scalehouse/ticket">New Ticket</a>
+			</li>
+			<li>
+				<a href="#/scalehouse/material">Material</a>
+			</li>
+			<li>
+				<a href="#/scalehouse/contracts">Contracts</a>
+			</li>
+			<li>
+				<a href="#/scalehouse/companies">Trucking Companies</a>
+			</li>
+			<li>
+				<a href="#/scalehouse/vehicles">Vehicles</a>
+			</li>
+			<li>
+				<a href="#/scalehouse/crusher" ng-show="user.is('CrusherManager')">Crusher</a>
+			</li>
+			<li>
+				<a href="#/scalehouse/history">Ticket History</a>
+			</li>
+		</ul>
+	</div>
+	<!--<div id="sidebar-icon" ng-click="hideSidebar=true" ng-hide="!hideSidebar"><i class="fa fa-bars"></i></div>-->
+	<a id="sidebar-close" class="btn btn-inverse wow zoomIn" data-wow-delay=".5s" ng-click="hideSidebar=true"><i class="fa fa-close"></i></a>
+	<a id="sidebar-open" class="btn btn-inverse wow zoomIn" data-wow-delay=".5s" ng-click="hideSidebar=false"><i class="fa fa-bars"></i></a>
+	<div id="page-content-wrapper">
+		<div class="container-fluid" ng-include="tools.url()"></div>
+	</div>
+</div>

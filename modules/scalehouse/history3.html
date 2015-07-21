@@ -1,0 +1,50 @@
+<div class="well">
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th>Contract</th>
+				<th>Material</th>
+				<th>Truck Co.</th>
+				<th>Vehicle</th>
+				<th>Clear</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<th><select class="form-control" ng-options="item.objectId as item.name for item in contracts" ng-model="search.contract"></th>
+				<th><select class="form-control" ng-options="item.objectId as item.name for item in materials" ng-model="search.material"></th>
+				<th><select class="form-control" ng-options="item.objectId as item.name for item in companies" ng-model="search.company"></th>
+				<th><select class="form-control" ng-options="item.objectId as item.vId for item in vehicles" ng-model="search.vehicle"></th>
+				<th><a class="btn btn-block btn-danger" ng-click="search = {}">Clear Filters</a></th>
+			</tr>
+		</tbody>
+	</table>
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th>Ticket</th>
+				<th>Vehicle</th>
+				<th>Tons</th>
+				<th>Price Per Ton</th>
+				<th>Haul Price</th>
+				<th>Total Haul Price</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr class="zoomIn" ng-repeat="ticket in tickets | filter: search" ng-init="tools.history.contractMaterial(ticket)">
+				<td>{{ticket.objectId}}</td>
+				<td>{{ticket.summary.vehicle}}</td>
+				<td>{{ticket.summary.tons}}</td>
+				<td>{{ticket.m.price}}</td>
+				<td>{{ticket.m.haulPrice}}</td>
+				<td>{{ticket.m.totalPrice}}</td>
+			</tr>
+			<tr>
+				<td colspan="2"></td>
+				<td table-math="3">{{math.average}}</td>
+				<td table-math="4">{{math.average | currency}}</td>
+				<td table-math="5">{{math.sum | currency}}</td>
+			</tr>
+		</tbody>
+	</table>
+</div>

@@ -1,0 +1,69 @@
+<div ng-show="station.objectId" ng-init="tools.init()">
+	<form id="fuelTicket" ng-init="tools.fuel.init()" ng-submit="tools.fuel.step()" ng-hide="fuelTicket.step > 7">
+		<div class="form-group" ng-show="fuelTicket.step == 0">
+			<label>Employee ID</label>
+			<input type="text" class="form-control" placeholder="Employee Id" ng-model="fuelTicket.employeeId">
+		</div>
+		<div class="form-group" ng-show="fuelTicket.step == 1">
+			<label>Personal PIN</label>
+			<input type="password" class="form-control" placeholder="PIN" ng-model="fuelTicket.employeePin">
+		</div>
+		<div class="form-group" ng-show="fuelTicket.step == 2">
+			<label>Equipment #</label>
+			<input type="text" class="form-control" placeholder="Equipment #" ng-model="fuelTicket.equipmentNumber">
+		</div>
+		<div class="form-group" ng-show="fuelTicket.step == 3">
+			<label>Odometer / Hour Meter</label>
+			<input type="number" class="form-control" placeholder="Reading" ng-model="fuelTicket.equipmentUsage">
+		</div>
+		
+		
+		<div class="form-group" ng-show="fuelTicket.step == 4">
+			<label>Pre Pump Reading</label>
+			<input type="number" class="form-control" placeholder="Tank Reading" ng-model="fuelTicket.preReading">
+		</div>
+		<div class="form-group" ng-show="fuelTicket.step == 5">
+			<label>Post Pump Reading</label>
+			<input type="number" class="form-control" placeholder="Tank Reading" ng-model="fuelTicket.postReading">
+		</div>
+		<div class="form-group" ng-show="fuelTicket.step == 6">
+			<label>Gallons</label>
+			<input type="number" class="form-control" placeholder="Gallons Used" ng-model="fuelTicket.gallons">
+		</div>
+		<div class="form-group" ng-show="fuelTicket.step == 7">
+			<label>New Lock Combo</label>
+			<input type="text" class="form-control" placeholder="####" ng-model="fuelTicket.newCombo">
+		</div>
+		<div class="keypad">
+				<div><a class="btn btn-block btn-info" ng-click="tools.fuel.keypad('delete')">Backspace</a></div>
+				<br>
+				<block ng-click="tools.fuel.keypad(1)">1</block>
+				<block ng-click="tools.fuel.keypad(2)">2</block>
+				<block ng-click="tools.fuel.keypad(3)">3</block>
+				<block ng-click="tools.fuel.keypad(4)">4</block>
+				<block ng-click="tools.fuel.keypad(5)">5</block>
+				<block ng-click="tools.fuel.keypad(6)">6</block>
+				<block ng-click="tools.fuel.keypad(7)">7</block>
+				<block ng-click="tools.fuel.keypad(8)">8</block>
+				<block ng-click="tools.fuel.keypad(9)">9</block>
+				<block><a class="btn btn-block btn-info" ng-click="tools.fuel.prevStep()">Previous</a></block>
+				<block ng-click="tools.fuel.keypad(0)">0</block>
+				<block><input type="submit" class="btn btn-block btn-info" value="Next"></block>
+		</div>
+		<hr>
+		<a class="btn btn-block btn-warning" ng-click="tools.fuel.undoDiscard()" ng-show="tempDiscard && !fuelTicket.step">Undo Discard</a>
+		<a class="btn btn-block btn-danger" ng-click="tools.fuel.discard()" ng-show="fuelTicket.step">Discard Ticket</a>
+		<div class="alert alert-danger" role="alert" ng-repeat="notice in fuelTicket.notices">{{notice}}</div>
+	</form>
+	
+	<div class="well" ng-show="fuelTicket.step > 7">
+		<h1>Thanks {{fuel.gen.employee.name}}!</h1>
+		<h3>Your fuel has been recorded!</h3>
+		<div class="alert alert-danger" role="alert" ng-repeat="notice in fuelTicket.notices">{{notice}}</div>
+		<a class="btn btn-block btn-success" ng-click="tools.fuel.init()">Done</a>
+	</div>
+</div>
+<div ng-hide="station.objectId" class="well">
+	<p>You need to setup this device as a station before you can use it to record fuel.</p>
+	<a class="btn btn-block btn-info" href="#/station">Setup Station</a>
+</div>

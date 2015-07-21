@@ -1,0 +1,13 @@
+{
+	"SITE":{
+		"TITLE":"James Hamilton Construction",
+		"NAV":{
+			"HOME":"Home",
+			"CONTACT":"Contact",
+			"ADMIN": "Admin Dashboard"
+		},
+		"LOGIN":"Login",
+		"SIGNUP":"Signup",
+		"COPYRIGHT":"2014 Creative Design"
+	}
+}
