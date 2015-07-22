@@ -1,0 +1,19 @@
+CACHE MANIFEST
+# 1.0
+
+NETWORK:
+/js/app.js
+CACHE:
+index.html
+manifest.json
+/js/app.js
+/js/config.js
+/js/controllers.js
+/js/custom.js
+/js/services.js
+/static/alertModal.js
+/static/header.js
+/views/admin.js
+/views/fuel.js
+/views/main.js
+/views/station.js

@@ -360,15 +360,15 @@ app.controller('MainCtrl', function($rootScope, $scope, $routeParams, $http, $ti
 			}
 		},
 		offline: {
-			// install: function(){
-			// 	navigator.serviceWorker.register('/fuel/worker.js', {
-			// 		scope: '/fuel/'
-			// 	}).then(function(reg) {
-			// 		console.log('◕‿◕', reg);
-			// 	}, function(err) {
-			// 		console.log('ಠ_ಠ', err);
-			// 	});
-			// }
+			install: function(){
+				navigator.serviceWorker.register('/fuel/worker.js', {
+					scope: '/fuel/'
+				}).then(function(reg) {
+					console.log('◕‿◕', reg);
+				}, function(err) {
+					console.log('ಠ_ಠ', err);
+				});
+			}
 		}
 	}
 	
