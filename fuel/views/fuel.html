@@ -62,7 +62,6 @@
 		<hr>
 		<a class="btn btn-block btn-warning" ng-click="tools.fuel.undoDiscard()" ng-show="tempDiscard && !fuelTicket.step">Undo Discard</a>
 		<a class="btn btn-block btn-danger" ng-click="tools.fuel.discard()" ng-show="fuelTicket.step">Discard Ticket</a>
-		<div class="alert alert-danger" role="alert" ng-repeat="notice in fuelTicket.notices">{{notice}}</div>
 	</form>
 	
 	<div class="well" ng-show="fuelTicket.step > fuelSteps.length-1">

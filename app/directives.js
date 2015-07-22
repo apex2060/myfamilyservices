@@ -273,6 +273,89 @@ app.directive('mediaManager', function() {
 		}
 	};
 });
+app.directive('fileManager', function() {
+	return {
+		restrict: 'A',
+		replace: true,
+		transclude: true,
+		template:	'<div>'+
+				 		'<input type="file" class="hidden">'+
+						'<div ng-transclude></div>'+
+					'</div>',
+		scope: {
+			callback: 	'=fileManager',
+			parent: 	'=parent'
+		},
+		link: function(scope, elem, attrs, ctrl) {
+
+			if(typeof(scope.callback)!='function'){
+				console.error('fileManager: no callback defined.',scope.callback)
+				return;
+			}
+
+			processDragOverOrEnter = function(event) {
+				if (event != null) {
+					event.preventDefault();
+				}
+				event.originalEvent.dataTransfer.effectAllowed = 'copy';
+				return false;
+			};
+
+
+			elem.bind('click', function(e){
+				//At some point, this may end up being a call to open a modal which links to the media list
+				$(elem).children('input')[0].click()
+			});
+
+			elem.bind('change', function(e) {
+				var file, name, reader, size, type;
+				if (e != null) {
+					e.preventDefault();
+				}
+				file = e.target.files[0];
+				if(file){
+					name = file.name;
+					type = file.type;
+					size = file.size;
+					reader = new FileReader();
+					reader.onload = function(evt) {
+						scope.callback({
+							parent: scope.parent,
+							attr: file,
+							name: file.name,
+							src: evt.target.result
+						})
+					};
+					reader.readAsDataURL(file);
+				}
+				return false;
+			});
+			elem.bind('dragover', processDragOverOrEnter);
+			elem.bind('dragenter', processDragOverOrEnter);
+			return elem.bind('drop', function(event) {
+				var file, name, reader, size, type;
+				if (event != null) {
+					event.preventDefault();
+				}
+				it.event = event;
+				file = event.originalEvent.dataTransfer.files[0];
+				name = file.name;
+				type = file.type;
+				size = file.size;
+				reader = new FileReader();
+				reader.onload = function(evt) {
+					scope.callback({
+						parent: scope.parent,
+						attr: file,
+						src: evt.target.result
+					})
+				};
+				reader.readAsDataURL(file);
+				return false;
+			});
+		}
+	};
+});
 app.directive('ngEnter', function() {
 	return function(scope, element, attrs) {
 		element.bind("keydown keypress", function(event) {

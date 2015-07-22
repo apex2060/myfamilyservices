@@ -11,7 +11,7 @@ app.config(function($routeProvider,$compileProvider,$controllerProvider,$provide
 
 	var parent 		= ['scalehouse', 'equipment', 'operations']
  	// :module/index.html		>	:module/ctrl.js
-	var child		= ['admin', 'employee']
+	var child		= ['admin', 'employee', 'communication']
 	// :module/:view/index.html	> 	:module/:view/ctrl.js
 	var sibbling	= ['main']
 	// :module/:view.html		> 	:module/ctrl.js
