@@ -2,7 +2,8 @@ app.controller('MainCtrl', function($rootScope, $scope, $routeParams, $http, $ti
 	$scope.rp = $routeParams;
 	$scope.config = config;
 	$scope.tickets = [];
-	var fuelSteps 	= ['employeeId', 'employeePin', 'equipmentNumber', 'equipmentUsage', 'preReading', 'postReading', 'gallons', 'newCombo'];
+	var fuelSteps = $scope.fuelSteps = ['employeeId', 'employeePin', 'equipmentNumber', 'equipmentUsage', 'equipmentLocation', 'preReading', 'postReading', 'gallons', 'newCombo'];
+	var keypad 	= ['employeeId', 'employeePin', 'equipmentNumber', 'equipmentUsage', 'preReading', 'postReading', 'gallons', 'newCombo'];
 	var stringEnteries = ['employeeId', 'employeePin', 'equipmentNumber', 'newCombo']
 	var Employees = ParseData('HrEmployees');
 	var Equipment = ParseData({
@@ -70,6 +71,7 @@ app.controller('MainCtrl', function($rootScope, $scope, $routeParams, $http, $ti
 					tools.fuel.steps[fuelSteps[s]]($scope.fuelTicket).then(function(fuelTicket){
 						$scope.fuelTicket = fuelTicket;
 						$scope.fuelTicket.step++;
+						navigator.vibrate(50)
 					}).catch(function(e){
 						navigator.vibrate(200)
 						tools.alert('Oops!', e)
@@ -116,7 +118,7 @@ app.controller('MainCtrl', function($rootScope, $scope, $routeParams, $http, $ti
 								ticket.gen.equipment = list[i]
 						if(ticket.gen.equipment){
 							ticket.notices = ticket.notices.concat(ticket.gen.equipment.notices);
-							ticket.notices.push('You need to bring your vehicle in for inspection.')
+							// ticket.notices.push('You need to bring your vehicle in for inspection.')
 							deferred.resolve(ticket);
 						}else{
 							deferred.reject('Sorry, the entered equipment ID could not be found.')
@@ -138,6 +140,15 @@ app.controller('MainCtrl', function($rootScope, $scope, $routeParams, $http, $ti
 					else
 						deferred.reject('Your last usage reading was: '+equip.usage+' which is higher than what you just entered.');
 						
+					return deferred.promise;
+				},
+				equipmentLocation: function(ticket){
+					var deferred = 		$q.defer();
+					if(!ticket.equipmentLocation)
+						deferred.reject('You must select a location.')
+					else
+						deferred.resolve(ticket);
+					
 					return deferred.promise;
 				},
 				preReading: function(ticket){
@@ -217,6 +228,14 @@ app.controller('MainCtrl', function($rootScope, $scope, $routeParams, $http, $ti
 					alert('Sorry that pin did not match the last discarded ticket.');
 				}
 			},
+			setLocation: function(loc){
+				$scope.fuelTicket.equipmentLocation = loc;
+			},
+			showKeypad: function(){
+				var s = $scope.fuelTicket.step;
+				var step = fuelSteps[s];
+				return(keypad.indexOf(step) != -1)
+			}
 		},
 		admin: {
 			init: function(){
@@ -264,6 +283,10 @@ app.controller('MainCtrl', function($rootScope, $scope, $routeParams, $http, $ti
 				}, function(error){
 					$scope.syncError = error;
 				})
+			},
+			clear: function(){
+				if(prompt('Code: ') == '5827')
+					localStorage.clear();
 			}
 		},
 		station: {

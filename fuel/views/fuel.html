@@ -1,5 +1,5 @@
 <div ng-show="station.objectId" ng-init="tools.init()">
-	<form id="fuelTicket" ng-init="tools.fuel.init()" ng-submit="tools.fuel.step()" ng-hide="fuelTicket.step > 7">
+	<form id="fuelTicket" ng-init="tools.fuel.init()" ng-submit="tools.fuel.step()" ng-hide="fuelTicket.step > fuelSteps.length-1">
 		<div class="form-group" ng-show="fuelTicket.step == 0">
 			<label>Employee ID</label>
 			<input type="text" class="form-control" placeholder="Employee Id" ng-model="fuelTicket.employeeId">
@@ -16,25 +16,34 @@
 			<label>Odometer / Hour Meter</label>
 			<input type="number" class="form-control" placeholder="Reading" ng-model="fuelTicket.equipmentUsage">
 		</div>
-		
-		
 		<div class="form-group" ng-show="fuelTicket.step == 4">
+			<label>Equipmnet Usage Location</label>
+			<ul class="list-group">
+				<li class="list-group-item" ng-class="{active: fuelTicket.equipmentLocation=='az'}" ng-click="tools.fuel.setLocation('az')">Arizona</li>
+				<li class="list-group-item" ng-class="{active: fuelTicket.equipmentLocation=='nm'}" ng-click="tools.fuel.setLocation('nm')">New Mexico</li>
+				<li class="list-group-item" ng-class="{active: fuelTicket.equipmentLocation=='tx'}" ng-click="tools.fuel.setLocation('tx')">Texas</li>
+			</ul>
+			<a class="btn btn-block btn-info" ng-click="tools.fuel.step()">Next</a>
+		</div>
+		
+		
+		<div class="form-group" ng-show="fuelTicket.step == 5">
 			<label>Pre Pump Reading</label>
 			<input type="number" class="form-control" placeholder="Tank Reading" ng-model="fuelTicket.preReading">
 		</div>
-		<div class="form-group" ng-show="fuelTicket.step == 5">
+		<div class="form-group" ng-show="fuelTicket.step == 6">
 			<label>Post Pump Reading</label>
 			<input type="number" class="form-control" placeholder="Tank Reading" ng-model="fuelTicket.postReading">
 		</div>
-		<div class="form-group" ng-show="fuelTicket.step == 6">
+		<div class="form-group" ng-show="fuelTicket.step == 7">
 			<label>Gallons</label>
 			<input type="number" class="form-control" placeholder="Gallons Used" ng-model="fuelTicket.gallons">
 		</div>
-		<div class="form-group" ng-show="fuelTicket.step == 7">
+		<div class="form-group" ng-show="fuelTicket.step == 8">
 			<label>New Lock Combo</label>
 			<input type="text" class="form-control" placeholder="####" ng-model="fuelTicket.newCombo">
 		</div>
-		<div class="keypad">
+		<div class="keypad" ng-show="tools.fuel.showKeypad()">
 				<div><a class="btn btn-block btn-info" ng-click="tools.fuel.keypad('delete')">Backspace</a></div>
 				<br>
 				<block ng-click="tools.fuel.keypad(1)">1</block>
@@ -56,7 +65,7 @@
 		<div class="alert alert-danger" role="alert" ng-repeat="notice in fuelTicket.notices">{{notice}}</div>
 	</form>
 	
-	<div class="well" ng-show="fuelTicket.step > 7">
+	<div class="well" ng-show="fuelTicket.step > fuelSteps.length-1">
 		<h1>Thanks {{fuel.gen.employee.name}}!</h1>
 		<h3>Your fuel has been recorded!</h3>
 		<div class="alert alert-danger" role="alert" ng-repeat="notice in fuelTicket.notices">{{notice}}</div>

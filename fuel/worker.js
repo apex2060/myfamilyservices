@@ -1,5 +1,5 @@
 // console.log("SW startup");
-var cacheVersion = 'v12';
+var cacheVersion = 'v19';
 
 self.addEventListener('install', function(event) {
 	console.log("SW installed");
