@@ -15,7 +15,7 @@
 						<ul class="list-group">
 							<li class="list-group-item active">Sent</li>
 							<li class="list-group-item" ng-repeat="fax in faxesSent" ng-click="tools.file.ipreview(fax.doc)">
-								<span>{{fax.to[0].number}} ({{fax.to.length}})</span>
+								<span>{{fax.recepients[0].number}} ({{fax.recepients.length}})</span>
 								<a class="pull-right" target="_new" href="{{fax.doc.url}}"><i class="fa fa-share-square-o"></i></a>
 							</li>
 						</ul>
@@ -33,7 +33,7 @@
 						<ul class="list-group">
 							<li class="list-group-item active">Received</li>
 							<li class="list-group-item" ng-repeat="fax in faxesReceived" ng-click="tools.file.ipreview(fax.doc)">
-								<span>{{fax.from}}</span>
+								<span>{{fax.remoteNumber}}</span>
 								<a class="pull-right" target="_new" href="{{fax.doc.url}}"><i class="fa fa-share-square-o"></i></a>
 							</li>
 						</ul>
