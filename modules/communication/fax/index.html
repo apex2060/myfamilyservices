@@ -1,22 +1,68 @@
 <div class="container" ng-controller="ComFaxCtrl">
 	<div class="well">
-		<h1 class="wow slideInLeft" data-wow-delay="0.4s">Fax Center</h1>
-		<div class="row">
-			<div class="col-md-3" ng-repeat="file in files">
-				<ul class="list-group">
-					<li class="list-group-item active">{{file.suffix}}</li>
-					<li class="list-group-item">
-						<input type="text" class="form-control" placeholder="File Name" ng-model="file.name">
-					</li>
-					<li class="list-group-item"><canvas id="pdfview" style="width:100%;">PDF View</canvas></li>
-					<li class="list-group-item" ng-hide="file.url"><a class="btn btn-info btn-block" ng-click="tools.file.upload(file)">Upload</a></li>
-					<li class="list-group-item" ng-show="file.url"><a class="btn btn-info btn-block" ng-click="tools.file.renderPdf(file)">Preview</a></li>
-					<li class="list-group-item" ng-show="file.url"><a class="btn btn-info btn-block" ng-click="tools.file.send(file)">Send</a></li>
-				</ul>
+		<!-- Nav tabs -->
+		<ul class="nav nav-tabs" role="tablist">
+			<li role="presentation" class="active"><a href="#sent" aria-controls="sent" role="tab" data-toggle="tab">Faxes Sent</a></li>
+			<li role="presentation"><a href="#received" aria-controls="received" role="tab" data-toggle="tab">Faxes Received</a></li>
+			<li role="presentation"><a href="#new" aria-controls="new" role="tab" data-toggle="tab">Send A Fax</a></li>
+		</ul>
+
+		<!-- Tab panes -->
+		<div class="tab-content">
+			<div role="tabpanel" class="tab-pane active" id="sent">
+				<div class="row">
+					<div class="col-md-3">
+						<ul class="list-group">
+							<li class="list-group-item active">Sent</li>
+							<li class="list-group-item" ng-repeat="fax in faxesSent" ng-click="tools.file.ipreview(fax.doc)">
+								<span>{{fax.to[0].number}} ({{fax.to.length}})</span>
+								<a class="pull-right" target="_new" href="{{fax.doc.url}}"><i class="fa fa-share-square-o"></i></a>
+							</li>
+						</ul>
+					</div>
+					<div class="col-md-9">
+						<iframe ng-src="{{iframe}}" style="width: 100%; height: 500px;"></iframe>
+					</div>
+				</div>
 			</div>
-			<div class="col-md-3">
-				<div class="well">
-					<div media-manager="tools.file.add" class="media-manager wow bounceIn">Add A Document</div>
+			
+			
+			<div role="tabpanel" class="tab-pane" id="received">
+				<div class="row">
+					<div class="col-md-3">
+						<ul class="list-group">
+							<li class="list-group-item active">Received</li>
+							<li class="list-group-item" ng-repeat="fax in faxesReceived" ng-click="tools.file.ipreview(fax.doc)">
+								<span>{{fax.from}}</span>
+								<a class="pull-right" target="_new" href="{{fax.doc.url}}"><i class="fa fa-share-square-o"></i></a>
+							</li>
+						</ul>
+					</div>
+					<div class="col-md-9">
+						<iframe ng-src="{{iframe}}" style="width: 100%; height: 500px;"></iframe>
+					</div>
+				</div>
+			</div>
+			
+			
+			<div role="tabpanel" class="tab-pane" id="new">
+				<div class="row">
+					<div class="col-md-3">
+						<ul class="list-group">
+							<li class="list-group-item"><input type="text" class="form-control" placeholder="To: (10 Digit Number)" ng-model="file.number"></li>
+							<li class="list-group-item" ng-hide="file.url">
+								<div class="well wow bounceIn" media-manager="tools.file.add">
+									<div class="media-manager">Add Document</div>
+								</div>
+							</li>
+							<li class="list-group-item" ng-show="file.url && !file.status"><a class="btn btn-block btn-info" ng-click="tools.file.send()">Send</a></li>
+							<li class="list-group-item" ng-show="file.status == 'Sending...'">{{file.status}}</li>
+							<li class="list-group-item" ng-show="file.status == 'Complete'"><a class="btn btn-block btn-success" ng-click="tools.file.clear()">Send Another</a></li>
+						</ul>
+					</div>
+					<div class="col-md-9" media-manager="tools.file.add">
+						<canvas id="pdfview" style="width:100%;">Drop File Here</canvas>
+					</div>
 				</div>
 			</div>
 		</div>

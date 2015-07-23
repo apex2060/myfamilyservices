@@ -80,7 +80,9 @@ map {
 	background: #FFF;
 }
 
-
+.tab-pane>.row{
+	margin-top: 30px;
+}
 
 .gray, .grey{
 	-webkit-filter: grayscale(100%);
