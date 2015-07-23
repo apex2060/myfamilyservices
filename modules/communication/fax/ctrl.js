@@ -2,16 +2,18 @@ app.lazy.controller('ComFaxCtrl', function($rootScope, $scope, $timeout, $http, 
 	$scope.files = [];
 	var tools = $scope.tools = {
 		init: function(){
-			$http.get('https://api.parse.com/1/classes/Faxes?order=-createdAt&where={"archived":false}').success(function(data){
-				var faxes = data.results;
-				var faxesSent 		= $scope.faxesSent = [];
-				var faxesReceived 	= $scope.faxesReceived = [];
-				for(var i=0; i<faxes.length; i++)
-					if(faxes[i].direction == 'sent')
-						faxesSent.push(faxes[i])
-					else
-						faxesReceived.push(faxes[i])
-			})
+			Auth.tools.init().then(function(user){
+				$http.get('https://api.parse.com/1/classes/Faxes?order=-createdAt&where={"archived":false}').success(function(data){
+					var faxes = data.results;
+					var faxesSent 		= $scope.faxesSent = [];
+					var faxesReceived 	= $scope.faxesReceived = [];
+					for(var i=0; i<faxes.length; i++)
+						if(faxes[i].direction == 'sent')
+							faxesSent.push(faxes[i])
+						else
+							faxesReceived.push(faxes[i])
+				})
+			});
 		},
 		file: {
 			add: function(file){
