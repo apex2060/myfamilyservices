@@ -13,10 +13,14 @@
 				<div class="row">
 					<div class="col-md-3">
 						<ul class="list-group">
-							<li class="list-group-item active">Sent</li>
+							<li class="list-group-item active">
+								<span></span>Sent
+								<a class="pull-right badge" ng-click="tools.file.reload()"><i class="fa fa-refresh"></i></a>
+							</li>
 							<li class="list-group-item" ng-repeat="fax in faxesSent" ng-click="tools.file.ipreview(fax.doc)">
 								<span>{{fax.recepients[0].number}} ({{fax.recepients.length}})</span>
-								<a class="pull-right" target="_new" href="{{fax.doc.url}}"><i class="fa fa-share-square-o"></i></a>
+								<a class="pull-right btn btn-xs btn-info" target="_new" href="{{fax.doc.url}}"><i class="fa fa-share-square-o"></i></a>
+								<a class="pull-right btn btn-xs btn-info" ng-click="tools.file.archive(fax)"><i class="fa fa-eye-slash"></i></a>
 							</li>
 						</ul>
 					</div>
@@ -34,7 +38,8 @@
 							<li class="list-group-item active">Received</li>
 							<li class="list-group-item" ng-repeat="fax in faxesReceived" ng-click="tools.file.ipreview(fax.doc)">
 								<span>{{fax.remoteNumber}}</span>
-								<a class="pull-right" target="_new" href="{{fax.doc.url}}"><i class="fa fa-share-square-o"></i></a>
+								<a class="pull-right btn btn-xs btn-info" target="_new" href="{{fax.doc.url}}"><i class="fa fa-share-square-o"></i></a>
+								<a class="pull-right btn btn-xs btn-info" ng-click="tools.file.archive(fax)"><i class="fa fa-eye-slash"></i></a>
 							</li>
 						</ul>
 					</div>
@@ -49,19 +54,21 @@
 				<div class="row">
 					<div class="col-md-3">
 						<ul class="list-group">
+							<li class="list-group-item">{{file.status}}</li>
 							<li class="list-group-item"><input type="text" class="form-control" placeholder="To: (10 Digit Number)" ng-model="file.number"></li>
 							<li class="list-group-item" ng-hide="file.url">
 								<div class="well wow bounceIn" file-manager="tools.file.add">
 									<div class="file-manager">Add Document</div>
 								</div>
 							</li>
-							<li class="list-group-item" ng-show="file.url && !file.status"><a class="btn btn-block btn-info" ng-click="tools.file.send()">Send</a></li>
-							<li class="list-group-item" ng-show="file.status == 'Sending...'">{{file.status}}</li>
+							<li class="list-group-item" ng-show="file.status == 'Upload Complete'"><a class="btn btn-block btn-info" ng-click="tools.file.send()">Send</a></li>
 							<li class="list-group-item" ng-show="file.status == 'Complete'"><a class="btn btn-block btn-success" ng-click="tools.file.clear()">Send Another</a></li>
+							<li class="list-group-item" ng-hide="file.status == 'Complete'"><a class="btn btn-block btn-warning" ng-click="tools.file.clear()">Restart</a></li>
 						</ul>
 					</div>
 					<div class="col-md-9" file-manager="tools.file.add">
-						<canvas id="pdfview" style="width:100%;">Drop File Here</canvas>
+						<canvas id="pdfview" ng-hide="faxPreview" style="width:100%;">Drop File Here</canvas>
+						<img ng-src="{{faxPreview}}" ng-show="faxPreview" style="max-width:100%;"></img>
 					</div>
 				</div>
 			</div>

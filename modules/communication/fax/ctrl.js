@@ -1,18 +1,26 @@
-app.lazy.controller('ComFaxCtrl', function($rootScope, $scope, $timeout, $http, $sce,  $q, config, FileService, Auth){
-	$scope.files = [];
+app.lazy.controller('ComFaxCtrl', function($scope, $timeout, $http, $sce, config, FileService, Data, Auth){
+	var acceptedFiles = ['doc', 'docx', 'pdf', 'tif', 'jpg', 'png', 'odt', 'txt', 'html'];
+	
+	var Faxes 		= Data({
+		className: 	'Faxes',
+		query: 		'?order=-createdAt&where={"archived":false}',
+		fireRef:	'Faxes'
+	});
+	$scope.$on(Faxes.listener, function(e, faxes) {
+		var faxesSent 		= $scope.faxesSent = [];
+		var faxesReceived 	= $scope.faxesReceived = [];
+		for(var i=0; i<faxes.length; i++)
+			if(faxes[i].direction == 'sent')
+				faxesSent.push(faxes[i])
+			else
+				faxesReceived.push(faxes[i])
+	});
+	
 	var tools = $scope.tools = {
 		init: function(){
+			tools.file.clear();
 			Auth.tools.init().then(function(user){
-				$http.get('https://api.parse.com/1/classes/Faxes?order=-createdAt&where={"archived":false}').success(function(data){
-					var faxes = data.results;
-					var faxesSent 		= $scope.faxesSent = [];
-					var faxesReceived 	= $scope.faxesReceived = [];
-					for(var i=0; i<faxes.length; i++)
-						if(faxes[i].direction == 'sent')
-							faxesSent.push(faxes[i])
-						else
-							faxesReceived.push(faxes[i])
-				})
+				Faxes.tools.list()
 			});
 		},
 		file: {
@@ -20,15 +28,26 @@ app.lazy.controller('ComFaxCtrl', function($rootScope, $scope, $timeout, $http, 
 				$timeout(function(){ 
 					var pieces = file.attr.name.split('.');
 					file.name = pieces[0];
-					file.suffix = pieces[pieces.length-1];
-					if($scope.file && $scope.file.number)
-						file.number = $scope.file.number;
-					$scope.file = file;
-					tools.file.upload(file)
+					file.suffix = pieces[pieces.length-1].toLowerCase();
+					
+					if(acceptedFiles.indexOf(file.suffix) != -1){
+						if($scope.file && $scope.file.number)
+							file.number = $scope.file.number;
+						file.status = 'Uploading File... Please Wait';
+						$scope.file = file;
+						tools.file.upload(file)
+					}else{
+						$scope.file = $scope.file || {};
+						$scope.file.status = 'You can only send files of type: '+JSON.stringify(acceptedFiles)
+					}
 				});
 			},
 			clear: function(){
-				$scope.file = {number: $scope.file.number};
+				$scope.faxPreview = null;
+				var file = {status: 'Choose a file to fax.'}
+				if($scope.file && $scope.file.number)
+					file.number = $scope.file.number;
+				$scope.file = file;
 			},
 			upload: function(file) {
 				var src = file.src;
@@ -36,7 +55,11 @@ app.lazy.controller('ComFaxCtrl', function($rootScope, $scope, $timeout, $http, 
 				FileService.upload(name, src).then(function(data) {
 					$scope.result = data;
 					file.url = data._url;
-					tools.file.renderPdf(file);
+					file.status = 'Upload Complete';
+					if(file.suffix == 'pdf')
+						tools.file.renderPdf(file);
+					else if(['tif','jpg','png'].indexOf(file.suffix) != -1)
+						tools.file.renderImg(file);
 				});
 			},
 			renderPdf: function(file){
@@ -63,6 +86,9 @@ app.lazy.controller('ComFaxCtrl', function($rootScope, $scope, $timeout, $http, 
 					});
 				});
 			},
+			renderImg: function(file){
+				$scope.faxPreview = file.url
+			},
 			ipreview: function(file){
 				$scope.iframe = $sce.trustAsResourceUrl(file.url);
 			},
@@ -77,11 +103,25 @@ app.lazy.controller('ComFaxCtrl', function($rootScope, $scope, $timeout, $http, 
 						url: file.url
 					}).success(function(data){
 						$scope.file.status = 'Complete'
+						$timeout(function(){
+							Faxes.tools.broadcast();
+						}, 30000)
+					}).error(function(e){
+						$scope.file.status = 'Error sending fax.'
 					})
 				}else{
 					alert('You must enter a 10 digit phone number.')
 				}
 			},
+			archive: function(fax){
+				if(confirm('Archiving will remove this fax from the list.  Are you sure you want to archive this fax?')){
+					fax.archived = true;
+					Faxes.tools.save(fax)
+				}
+			},
+			reload: function(){
+				Faxes.tools.broadcast();
+			}
 		}
 	}
 	
