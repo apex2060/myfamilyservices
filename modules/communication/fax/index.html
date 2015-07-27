@@ -5,16 +5,18 @@
 			<li role="presentation" class="active"><a href="#sent" aria-controls="sent" role="tab" data-toggle="tab">Faxes Sent</a></li>
 			<li role="presentation"><a href="#received" aria-controls="received" role="tab" data-toggle="tab">Faxes Received</a></li>
 			<li role="presentation"><a href="#new" aria-controls="new" role="tab" data-toggle="tab">Send A Fax</a></li>
+			<li role="presentation"><a href="#manage" aria-controls="manage" role="tab" data-toggle="tab">Manage Numbers</a></li>
 		</ul>
 
 		<!-- Tab panes -->
 		<div class="tab-content">
+			<!--LIST FAXES SENT-->
 			<div role="tabpanel" class="tab-pane active" id="sent">
 				<div class="row">
 					<div class="col-md-3">
 						<ul class="list-group">
 							<li class="list-group-item active">
-								<span></span>Sent
+								<span>Sent</span>
 								<a class="pull-right badge" ng-click="tools.file.reload()"><i class="fa fa-refresh"></i></a>
 							</li>
 							<li class="list-group-item" ng-repeat="fax in faxesSent" ng-click="tools.file.ipreview(fax.doc)">
@@ -30,12 +32,15 @@
 				</div>
 			</div>
 			
-			
+			<!--LIST FAXES RECEIVED-->
 			<div role="tabpanel" class="tab-pane" id="received">
 				<div class="row">
 					<div class="col-md-3">
 						<ul class="list-group">
-							<li class="list-group-item active">Received</li>
+							<li class="list-group-item active">
+								<span>Received</span>
+								<a class="pull-right badge" ng-click="tools.file.reload()"><i class="fa fa-refresh"></i></a>
+							</li>
 							<li class="list-group-item" ng-repeat="fax in faxesReceived" ng-click="tools.file.ipreview(fax.doc)">
 								<span>{{fax.remoteNumber}}</span>
 								<a class="pull-right btn btn-xs btn-info" target="_new" href="{{fax.doc.url}}"><i class="fa fa-share-square-o"></i></a>
@@ -49,26 +54,68 @@
 				</div>
 			</div>
 			
-			
+			<!--SEND A FAX-->
 			<div role="tabpanel" class="tab-pane" id="new">
 				<div class="row">
 					<div class="col-md-3">
 						<ul class="list-group">
 							<li class="list-group-item">{{file.status}}</li>
-							<li class="list-group-item"><input type="text" class="form-control" placeholder="To: (10 Digit Number)" ng-model="file.number"></li>
-							<li class="list-group-item" ng-hide="file.url">
-								<div class="well wow bounceIn" file-manager="tools.file.add">
-									<div class="file-manager">Add Document</div>
+							<li class="list-group-item">
+								<div class="input-group">
+									<a class="input-group-addon">From: </a>
+									<select class="form-control" ng-options="fax as fax.number for fax in faxNumbers" ng-model="file.from"></select>
 								</div>
 							</li>
-							<li class="list-group-item" ng-show="file.status == 'Upload Complete'"><a class="btn btn-block btn-info" ng-click="tools.file.send()">Send</a></li>
-							<li class="list-group-item" ng-show="file.status == 'Complete'"><a class="btn btn-block btn-success" ng-click="tools.file.clear()">Send Another</a></li>
-							<li class="list-group-item" ng-hide="file.status == 'Complete'"><a class="btn btn-block btn-warning" ng-click="tools.file.clear()">Restart</a></li>
+							<li class="list-group-item">
+								<div class="well wow bounceIn" file-manager="tools.file.add">
+									<div class="file-manager">Attach File</div>
+								</div>
+							</li>
+							<li class="list-group-item">
+								<div class="input-group">
+									<input type="text" class="form-control" placeholder="To: (10 Digit Number)" ng-model="file.to">
+									<a class="input-group-addon" ng-click="tools.file.send()">Send</a>
+								</div>
+							</li>
 						</ul>
 					</div>
 					<div class="col-md-9" file-manager="tools.file.add">
 						<canvas id="pdfview" ng-hide="faxPreview" style="width:100%;">Drop File Here</canvas>
 						<img ng-src="{{faxPreview}}" ng-show="faxPreview" style="max-width:100%;"></img>
+					</div>
+				</div>
+			</div>
+			
+			<!--MANAGE FAX NUMBERS-->
+			<div role="tabpanel" class="tab-pane" id="manage">
+				<div class="row">
+					<div class="col-md-3">
+						<ul class="list-group">
+							<li class="list-group-item" ng-repeat="entry in faxNumbers" title="{{entry.city}}, {{entry.state}}" ng-click="tools.number.focus(entry)">
+								{{entry.number}}
+							</li>
+							<li class="list-group-item">{{number.status}}</li>
+							<li class="list-group-item">
+								<div class="input-group">
+									<select class="form-control" ng-options="a for a in areaCodes" ng-model="number.areaCode"></select>
+									<a class="input-group-addon" ng-click="tools.number.add(number.areaCode)">Add</a>
+								</div>
+							</li>
+						</ul>
+					</div>
+					<div class="col-md-9" ng-show="faxNum">
+						<div class="panel panel-default">
+							<div class="panel-heading">
+								<span>Number: {{faxNum.number}}</span>
+								<a class="btn btn-danger btn-xs pull-right" ng-click="tools.number.remove(faxNum)">Delete</a>
+							</div>
+							<div class="panel-body">
+								<p><b>City:</b> {{faxNum.city}}</p>
+								<p><b>State:</b> {{faxNum.state}}</p>
+								<p><b>Assignment:</b> <input type="text" ng-model="faxNum.title"></p>
+								<a class="btn btn-info" ng-click="tools.number.save(faxNum)">Save</a>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
