@@ -184,3 +184,5 @@ app.lazy.controller('ComFaxCtrl', function($scope, $timeout, $http, $sce, config
 	tools.init();
 	it.ComFaxCtrl = $scope;
 });
+
+// Save the sent fax file upon send (before receiving the fax sent update) then update the entry upon update - this will allow us to associate the sent number & the user sending the fax
