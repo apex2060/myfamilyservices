@@ -773,3 +773,43 @@ app.factory('FileService', function ($http, $q) {
 	it.FileService = FileService;
 	return FileService;
 });
+
+app.factory('Documents', function ($rootScope, $http, $q, Auth, Data, FileService) {
+	var Docs		= Data({
+		className: 	'Documents',
+		query: 		'?order=-createdAt',
+		fireRef:	'Documents'
+	});
+	
+	Auth.tools.init().then(function(user){
+		Docs.tools.list()
+	});
+	
+	var Documents = {
+		root: Docs,
+		upload: function(file){
+			var deferred = $q.defer();
+			file.status = 'Uploading';
+			FileService.upload(file.name, file.src).then(function(data) {
+				file.status = 'Recording';
+				var doc = {
+					__type: "File",
+					name: 	data._name,
+					url: 	data._url
+				}
+				var entry = {
+					file: doc,
+					name: file.name
+				}
+				Docs.tools.save(entry).then(function(data){
+					file.url = data.file.url;
+					file.status = 'Complete'
+					deferred.resolve(data);
+				})
+			});
+			return deferred.promise;
+		}
+	}
+	it.Documents = Documents;
+	return Documents;
+});

@@ -1,4 +1,4 @@
-app.lazy.controller('ComFaxCtrl', function($scope, $timeout, $http, $sce, config, FileService, Data, Auth){
+app.lazy.controller('ComFaxCtrl', function($scope, $timeout, $http, $sce, config, FileService, Documents, Data, Auth){
 	var acceptedFiles = ['doc', 'docx', 'pdf', 'tif', 'jpg', 'png', 'odt', 'txt', 'html'];
 	
 	var FaxNums		= Data({
@@ -68,6 +68,43 @@ app.lazy.controller('ComFaxCtrl', function($scope, $timeout, $http, $sce, config
 				if(confirm('You will not be able to recover this number once it is gone.  Are you sure you want to release this number?')){
 					FaxNums.tools.delete(faxNum).then(function(data){
 						$scope.faxNum = null;
+					})
+				}
+			}
+		},
+		fax: {
+			init: function(){
+				$scope.fax = {status: 'Choose a file to fax.'};
+			},
+			upload: function(file){
+				Documents.upload(file).then(function(data){
+					tools.file.renderPdf(file);
+					$scope.file = data;
+				})
+			},
+			send: function(from, to, doc){
+				to = to.replace(/\D/g,'');
+
+				if(to.length == 10)
+					to = 1+''+to;
+				else if(to.length == 7)
+					to = 1+''+from.areaCode+to;
+					
+					
+				if(to.length != 11){
+					alert('You must enter a 10 digit phone number.')
+				}else if(!from){
+					alert('You must select the number from which you will be sending this fax.')
+				}else{
+					var fax = {
+						document: 	Documents.root.tools.ref(doc),
+						file: 			doc.file,
+						localNumber: 	from.number,
+						remoteNumber: 	to
+					}
+					
+					Faxes.tools.save(fax).then(function(result){
+						$scope.sendFaxResult = result;
 					})
 				}
 			}
