@@ -75,7 +75,7 @@ app.lazy.controller('ComFaxCtrl', function($scope, $timeout, $http, $sce, config
 			},
 			save: function(faxNum){
 				var fax = angular.copy(faxNum);
-				FaxNums.tools.save(faxNum)
+				FaxNums.tools.save(fax)
 			},
 			remove: function(faxNum){
 				if(confirm('You will not be able to recover this number once it is gone.  Are you sure you want to release this number?')){
@@ -127,8 +127,8 @@ app.lazy.controller('ComFaxCtrl', function($scope, $timeout, $http, $sce, config
 				FaxAlerts.tools.list().then(function(alerts){
 					$scope.faxAlerts = [];
 					for(var i=0; i<alerts.length; i++)
-						for(var c=0; c<alerts[i].criteria.length; c++)
-							if(alerts[i].criteria[c].column == 'localNumber' && alerts[i].criteria[c].column == number)
+						for(var c=0; c<alerts[i].rules.criteria.length; c++)
+							if(alerts[i].rules.criteria[c].column == 'localNumber' && alerts[i].rules.criteria[c].column == number)
 								$scope.faxAlerts.push(alerts[i])
 				})
 			},
@@ -137,6 +137,11 @@ app.lazy.controller('ComFaxCtrl', function($scope, $timeout, $http, $sce, config
 			},
 			add: function(){
 				var notification = {"criteria":[{"column":"direction","comparison":"equalTo","value":"received"},{"column":"localNumber","comparison":"equalTo","value":"5755780322"}],"notifications":[{"message":"You received a fax from: <remoteNumber>.  <link>","to":"9284368433","type":"txt"}]}
+			},
+			save: function(faxAlert){
+				FaxAlerts.tools.save(faxAlert).then(function(){
+					alert('Notification saved.')
+				})
 			}
 		},
 		file: {

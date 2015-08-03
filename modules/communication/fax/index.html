@@ -118,8 +118,9 @@
 								<p><b>City:</b> {{faxNum.city}}</p>
 								<p><b>State:</b> {{faxNum.state}}</p>
 								<p><b>Assignment:</b> <input type="text" ng-model="faxNum.title"></p>
+								<p><b>Notify:</b> <input type="text" ng-model="faxNum.alert"></p>
 
-								<div class="row">
+								<div class="row" ng-show="settings.alerts">
 									<div class="col-md-6">
 										<div class="list-group">
 											<div class="list-group-item">Notifications For</div>
@@ -140,13 +141,16 @@
 										<div class="list-group">
 											<div class="list-group-item">
 												<ul>
-													<li ng-repeat="c in faxAlert.rules.criteria"><b>{{c.column}}:</b> {{c.value}}</li>
+													<li ng-repeat="c in faxAlert.rules.criteria"><b><input type="text" ng-model="c.column">:</b><input type="text" ng-model="c.value"></li>
 												</ul>
 											</div>
 											<div class="list-group-item">
 												<ul>
-													<li ng-repeat="n in faxAlert.rules.notifications"><b>{{n.type}}:</b> {{n.to}}</li>
+													<li ng-repeat="n in faxAlert.rules.notifications"><b><input type="text" ng-model="n.type">:</b><input type="text" ng-model="n.to"></li>
 												</ul>
+											</div>
+											<div class="list-group-item">
+												<a class="btn btn-success btn-block" ng-click="tools.alerts.save(faxAlert)">Save Notification</a>
 											</div>
 										</div>
 									</div>
