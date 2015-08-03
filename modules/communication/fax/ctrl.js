@@ -148,7 +148,7 @@ app.lazy.controller('ComFaxCtrl', function($scope, $timeout, $http, $sce, config
 					notification.criteria.push({"column":"localNumber","comparison":"equalTo","value":localNumber})
 				if(remoteNumber)
 					notification.criteria.push({"column":"remoteNumber","comparison":"equalTo","value":remoteNumber})
-				$scope.faxAlerts.push({rules:notification});
+				$scope.faxAlerts.push({rules:notification, class:'Faxes'});
 			},
 			save: function(faxAlert){
 				FaxAlerts.tools.save(faxAlert).then(function(){
