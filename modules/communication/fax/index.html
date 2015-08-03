@@ -111,6 +111,7 @@
 						<div class="panel panel-default">
 							<div class="panel-heading">
 								<span>Number: {{faxNum.number}}</span>
+								<a class="btn btn-info btn-xs pull-right" ng-click="tools.number.save(faxNum)">Save</a>
 								<a class="btn btn-danger btn-xs pull-right" ng-click="tools.number.remove(faxNum)">Delete</a>
 							</div>
 							<div class="panel-body">
@@ -125,28 +126,32 @@
 											<div class="list-group-item">All</div>
 											<div class="list-group-item" ng-repeat="a in faxAlerts" ng-click="tools.alerts.focus(a)">
 												<ul>
-													<li ng-repeat="c in a.criteria"><b>{{c.column}}:</b> {{c.value}}</li>
+													<li ng-repeat="c in a.rules.criteria"><b>{{c.column}}:</b> {{c.value}}</li>
 												</ul>
 											</div>
-											<div class="list-group-item"><input type="text" placeholder="remote number"></div>
+											<div class="list-group-item">
+												<div class="input-group">
+													<input type="text" class="form-control" ng-model="temp.alert.from">
+													<a class="input-group-addon">Add</a>
+												</div>
+											</div>
 										</div>
 									</div>
 									<div class="col-md-6">
 										<div class="list-group">
 											<div class="list-group-item">
 												<ul>
-													<li ng-repeat="c in faxAlert.criteria"><b>{{c.column}}:</b> {{c.value}}</li>
+													<li ng-repeat="c in faxAlert.rules.criteria"><b>{{c.column}}:</b> {{c.value}}</li>
 												</ul>
 											</div>
 											<div class="list-group-item">
 												<ul>
-													<li ng-repeat="n in faxAlert.notifications"><b>{{c.type}}:</b> {{c.to}}</li>
+													<li ng-repeat="n in faxAlert.rules.notifications"><b>{{c.type}}:</b> {{c.to}}</li>
 												</ul>
 											</div>
 										</div>
 									</div>
 								</div>
-								<a class="btn btn-info" ng-click="tools.number.save(faxNum)">Save</a>
 							</div>
 						</div>
 					</div>
