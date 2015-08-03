@@ -28,9 +28,7 @@ app.lazy.controller('ComFaxCtrl', function($scope, $timeout, $http, $sce, config
 			else
 				faxesReceived.push(faxes[i])
 	});
-	$scope.$on(FaxAlerts.listener, function(e, faxAlerts) {
-		$scope.faxAlerts = faxAlerts
-	});
+
 	var tools = $scope.tools = {
 		init: function(){
 			tools.number.init();
@@ -73,6 +71,7 @@ app.lazy.controller('ComFaxCtrl', function($scope, $timeout, $http, $sce, config
 			},
 			focus: function(faxNum){
 				$scope.faxNum = faxNum;
+				tools.alerts.listFor(faxNum.number);
 			},
 			save: function(faxNum){
 				var fax = angular.copy(faxNum);
@@ -125,7 +124,13 @@ app.lazy.controller('ComFaxCtrl', function($scope, $timeout, $http, $sce, config
 		},
 		alerts: {
 			listFor: function(number){
-				
+				FaxAlerts.tools.list().then(function(alerts){
+					$scope.faxAlerts = [];
+					for(var i=0; i<alerts.length; i++)
+						for(var c=0; c<alerts[i].criteria.length; c++)
+							if(alerts[i].criteria[c].column == 'localNumber' && alerts[i].criteria[c].column == number)
+								$scope.faxAlerts.push(alerts[i])
+				})
 			},
 			focus: function(a){
 				$scope.faxAlert = a;
