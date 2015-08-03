@@ -51,6 +51,13 @@ app.lazy.controller('ComFaxCtrl', function($scope, $timeout, $http, $sce, config
 					$scope.file.status = 'Error sending fax.'
 				})
 			},
+			sync: function(){
+				$http.post('https://api.parse.com/1/functions/syncFaxNumbers', {}).success(function(data){
+					tools.number.list();
+				}).error(function(e){
+					$scope.file.status = 'Error sending fax.'
+				})
+			},
 			list: function(){
 				FaxNums.tools.broadcast();
 			},
