@@ -11,7 +11,11 @@ app.lazy.controller('ComFaxCtrl', function($scope, $timeout, $http, $sce, config
 		query: 		'?order=-createdAt&where={"archived":false}',
 		fireRef:	'Faxes'
 	});
-	
+	var FaxAlerts 	= Data({
+		className: 	'Alerts',
+		query: 		'?order=-createdAt&where={"class":"Faxes"}',
+		fireRef:	'FaxAlerts'
+	});
 	$scope.$on(FaxNums.listener, function(e, faxNumbers) {
 		$scope.faxNumbers = faxNumbers
 	});
@@ -24,7 +28,9 @@ app.lazy.controller('ComFaxCtrl', function($scope, $timeout, $http, $sce, config
 			else
 				faxesReceived.push(faxes[i])
 	});
-	
+	$scope.$on(FaxAlerts.listener, function(e, faxAlerts) {
+		$scope.faxAlerts = faxAlerts
+	});
 	var tools = $scope.tools = {
 		init: function(){
 			tools.number.init();
@@ -32,6 +38,7 @@ app.lazy.controller('ComFaxCtrl', function($scope, $timeout, $http, $sce, config
 			Auth.tools.init().then(function(user){
 				FaxNums.tools.list()
 				Faxes.tools.list()
+				FaxAlerts.tools.list()
 			});
 		},
 		number: {
@@ -47,6 +54,13 @@ app.lazy.controller('ComFaxCtrl', function($scope, $timeout, $http, $sce, config
 					for(var key in ac)
 						acs.push(key);
 					$scope.areaCodes = acs;
+				}).error(function(e){
+					$scope.file.status = 'Error sending fax.'
+				})
+			},
+			sync: function(){
+				$http.post('https://api.parse.com/1/functions/syncFaxNumbers', {}).success(function(data){
+					tools.number.list();
 				}).error(function(e){
 					$scope.file.status = 'Error sending fax.'
 				})
@@ -107,6 +121,17 @@ app.lazy.controller('ComFaxCtrl', function($scope, $timeout, $http, $sce, config
 						$scope.sendFaxResult = result;
 					})
 				}
+			}
+		},
+		alerts: {
+			listFor: function(number){
+				
+			},
+			focus: function(a){
+				$scope.faxAlert = a;
+			},
+			add: function(){
+				var notification = {"criteria":[{"column":"direction","comparison":"equalTo","value":"received"},{"column":"localNumber","comparison":"equalTo","value":"5755780322"}],"notifications":[{"message":"You received a fax from: <remoteNumber>.  <link>","to":"9284368433","type":"txt"}]}
 			}
 		},
 		file: {
@@ -221,5 +246,3 @@ app.lazy.controller('ComFaxCtrl', function($scope, $timeout, $http, $sce, config
 	tools.init();
 	it.ComFaxCtrl = $scope;
 });
-
-// Save the sent fax file upon send (before receiving the fax sent update) then update the entry upon update - this will allow us to associate the sent number & the user sending the fax

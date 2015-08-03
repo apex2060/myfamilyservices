@@ -104,6 +104,7 @@
 									<a class="input-group-addon" ng-click="tools.number.add(number.areaCode)">Add</a>
 								</div>
 							</li>
+							<li class="list-group-item"><a class="btn btn-info btn-block" ng-click="tools.number.sync()">Sync</a></li>
 						</ul>
 					</div>
 					<div class="col-md-8" ng-show="faxNum">
@@ -116,6 +117,35 @@
 								<p><b>City:</b> {{faxNum.city}}</p>
 								<p><b>State:</b> {{faxNum.state}}</p>
 								<p><b>Assignment:</b> <input type="text" ng-model="faxNum.title"></p>
+
+								<div class="row">
+									<div class="col-md-6">
+										<div class="list-group">
+											<div class="list-group-item">Alerts For</div>
+											<div class="list-group-item">All</div>
+											<div class="list-group-item" ng-repeat="a in faxAlerts" ng-click="tools.alerts.focus(a)">
+												<ul>
+													<li ng-repeat="c in a.criteria"><b>{{c.column}}:</b> {{c.value}}</li>
+												</ul>
+											</div>
+											<div class="list-group-item"><input type="text" placeholder="remote number"></div>
+										</div>
+									</div>
+									<div class="col-md-6">
+										<div class="list-group">
+											<div class="list-group-item">
+												<ul>
+													<li ng-repeat="c in faxAlert.criteria"><b>{{c.column}}:</b> {{c.value}}</li>
+												</ul>
+											</div>
+											<div class="list-group-item">
+												<ul>
+													<li ng-repeat="n in faxAlert.notifications"><b>{{c.type}}:</b> {{c.to}}</li>
+												</ul>
+											</div>
+										</div>
+									</div>
+								</div>
 								<a class="btn btn-info" ng-click="tools.number.save(faxNum)">Save</a>
 							</div>
 						</div>
