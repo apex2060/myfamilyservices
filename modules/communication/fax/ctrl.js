@@ -124,19 +124,31 @@ app.lazy.controller('ComFaxCtrl', function($scope, $timeout, $http, $sce, config
 		},
 		alerts: {
 			listFor: function(number){
+				$scope.faxAlert = {};
 				FaxAlerts.tools.list().then(function(alerts){
 					$scope.faxAlerts = [];
 					for(var i=0; i<alerts.length; i++)
 						for(var c=0; c<alerts[i].rules.criteria.length; c++)
-							if(alerts[i].rules.criteria[c].column == 'localNumber' && alerts[i].rules.criteria[c].column == number)
+							if(alerts[i].rules.criteria[c].column == 'localNumber' && alerts[i].rules.criteria[c].value == ''+number)
 								$scope.faxAlerts.push(alerts[i])
 				})
 			},
 			focus: function(a){
 				$scope.faxAlert = a;
 			},
-			add: function(){
-				var notification = {"criteria":[{"column":"direction","comparison":"equalTo","value":"received"},{"column":"localNumber","comparison":"equalTo","value":"5755780322"}],"notifications":[{"message":"You received a fax from: <remoteNumber>.  <link>","to":"9284368433","type":"txt"}]}
+			add: function(localNumber, remoteNumber){
+				var notification = {
+					"criteria":[
+						{"column":"direction","comparison":"equalTo","value":"received"}
+					],"notifications":[
+						{"message":"You received a fax from: <remoteNumber>.  <link>","to":"9284368433","type":"txt"}
+					]
+				}
+				if(localNumber)
+					notification.criteria.push({"column":"localNumber","comparison":"equalTo","value":localNumber})
+				if(remoteNumber)
+					notification.criteria.push({"column":"remoteNumber","comparison":"equalTo","value":remoteNumber})
+				$scope.faxAlerts.push(notification);
 			},
 			save: function(faxAlert){
 				FaxAlerts.tools.save(faxAlert).then(function(){
