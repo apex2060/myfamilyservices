@@ -141,14 +141,14 @@ app.lazy.controller('ComFaxCtrl', function($scope, $timeout, $http, $sce, config
 					"criteria":[
 						{"column":"direction","comparison":"equalTo","value":"received"}
 					],"notifications":[
-						{"message":"You received a fax from: <remoteNumber>.  <link>","to":"9284368433","type":"txt"}
+						{"message":"You received a fax from: <remoteNumber>.  <link>","to":"cellNumber","type":"txt"}
 					]
 				}
 				if(localNumber)
 					notification.criteria.push({"column":"localNumber","comparison":"equalTo","value":localNumber})
 				if(remoteNumber)
 					notification.criteria.push({"column":"remoteNumber","comparison":"equalTo","value":remoteNumber})
-				$scope.faxAlerts.push(notification);
+				$scope.faxAlerts.push({rules:notification});
 			},
 			save: function(faxAlert){
 				FaxAlerts.tools.save(faxAlert).then(function(){
