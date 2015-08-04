@@ -25,7 +25,7 @@
 						<li><a target="_new" href="http://keep.google.com">Notes</a></li>
 						<li class="divider"></li>
 						<li><a href="#/employee">Employee Portal</a></li>
-						<li ng-show="visitor.is('Admin')"><a href="#/admin">Admin Portal</a></li>
+						<li ng-show="user.is('Admin')"><a href="#/admin">Admin Portal</a></li>
 						<li class="divider"></li>
 						<li><a ng-click="tools.clearStorage()">Clear Storage</a></li>
 						<li><a ng-click="tools.user.logout()">Logout</a></li>
