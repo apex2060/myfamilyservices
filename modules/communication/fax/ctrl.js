@@ -11,7 +11,11 @@ app.lazy.controller('ComFaxCtrl', function($scope, $timeout, $http, $sce, config
 		query: 		'?order=-createdAt&where={"archived":false}',
 		fireRef:	'Faxes'
 	});
-	
+	var FaxAlerts 	= Data({
+		className: 	'Alerts',
+		query: 		'?order=-createdAt&where={"class":"Faxes"}',
+		fireRef:	'FaxAlerts'
+	});
 	$scope.$on(FaxNums.listener, function(e, faxNumbers) {
 		$scope.faxNumbers = faxNumbers
 	});
@@ -24,7 +28,7 @@ app.lazy.controller('ComFaxCtrl', function($scope, $timeout, $http, $sce, config
 			else
 				faxesReceived.push(faxes[i])
 	});
-	
+
 	var tools = $scope.tools = {
 		init: function(){
 			tools.number.init();
@@ -32,6 +36,7 @@ app.lazy.controller('ComFaxCtrl', function($scope, $timeout, $http, $sce, config
 			Auth.tools.init().then(function(user){
 				FaxNums.tools.list()
 				Faxes.tools.list()
+				FaxAlerts.tools.list()
 			});
 		},
 		number: {
@@ -66,10 +71,11 @@ app.lazy.controller('ComFaxCtrl', function($scope, $timeout, $http, $sce, config
 			},
 			focus: function(faxNum){
 				$scope.faxNum = faxNum;
+				tools.alerts.listFor(faxNum.number);
 			},
 			save: function(faxNum){
 				var fax = angular.copy(faxNum);
-				FaxNums.tools.save(faxNum)
+				FaxNums.tools.save(fax)
 			},
 			remove: function(faxNum){
 				if(confirm('You will not be able to recover this number once it is gone.  Are you sure you want to release this number?')){
@@ -114,6 +120,46 @@ app.lazy.controller('ComFaxCtrl', function($scope, $timeout, $http, $sce, config
 						$scope.sendFaxResult = result;
 					})
 				}
+			}
+		},
+		alerts: {
+			listFor: function(number){
+				$scope.faxAlert = {};
+				FaxAlerts.tools.list().then(function(alerts){
+					$scope.faxAlerts = [];
+					for(var i=0; i<alerts.length; i++)
+						for(var c=0; c<alerts[i].rules.criteria.length; c++)
+							if(alerts[i].rules.criteria[c].column == 'localNumber' && alerts[i].rules.criteria[c].value == ''+number)
+								$scope.faxAlerts.push(alerts[i])
+				})
+			},
+			focus: function(a){
+				$scope.faxAlert = a;
+			},
+			add: function(localNumber, remoteNumber){
+				var notification = {
+					"criteria":[
+						{"column":"direction","comparison":"equalTo","value":"received"}
+					],"notifications":[
+						{"message":"You received a fax from: <remoteNumber>.  <link>","to":"cellNumber","type":"txt"}
+					]
+				}
+				if(localNumber)
+					notification.criteria.push({"column":"localNumber","comparison":"equalTo","value":localNumber})
+				if(remoteNumber)
+					notification.criteria.push({"column":"remoteNumber","comparison":"equalTo","value":remoteNumber})
+				$scope.faxAlerts.push({rules:notification, class:'Faxes'});
+			},
+			remove: function(faxAlert, faxNum){
+				FaxAlerts.tools.delete(faxAlert).then(function(){
+					var i = $scope.faxAlerts.indexOf(faxAlert)
+					$scope.faxAlerts.splice(i,1)
+				})
+			},
+			save: function(faxAlert){
+				FaxAlerts.tools.save(faxAlert).then(function(){
+					alert('Notification saved.')
+				})
 			}
 		},
 		file: {
@@ -228,5 +274,3 @@ app.lazy.controller('ComFaxCtrl', function($scope, $timeout, $http, $sce, config
 	tools.init();
 	it.ComFaxCtrl = $scope;
 });
-
-// Save the sent fax file upon send (before receiving the fax sent update) then update the entry upon update - this will allow us to associate the sent number & the user sending the fax

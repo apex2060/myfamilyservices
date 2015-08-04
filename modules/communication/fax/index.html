@@ -79,7 +79,7 @@
 							</li>
 						</ul>
 					</div>
-					<div class="col-md-9" file-manager="tools.fax.add">
+					<div class="col-md-9" file-manager="tools.fax.upload">
 						<p>{{file}}</p>
 						<hr>
 						<p>{{fax}}</p>
@@ -123,8 +123,9 @@
 									<div class="col-md-6">
 										<div class="list-group">
 											<div class="list-group-item">Notification Subscriptions</div>
-											<div class="list-group-item" ng-repeat="a in faxAlerts" ng-click="tools.alerts.focus(a)">
-												<ul>
+											<div class="list-group-item" ng-repeat="a in faxAlerts">
+												<button type="button" class="close pull-right" ng-click="tools.alerts.remove(a, faxNum)"><span aria-hidden="true">&times;</span></button>
+												<ul ng-click="tools.alerts.focus(a)">
 													<li ng-repeat="c in a.rules.criteria"><b>{{c.column}}:</b> {{c.value}}</li>
 												</ul>
 											</div>
