@@ -7,9 +7,7 @@ app.factory('config', function ($http, $q) {
 		parse: {
 			root: 		'https://api.parse.com/1',
 			appId: 		'pzlNsaEz6hNmIntH42OOwiFfDBNZAB1YNL1oj3fV',
-			clientKey: 	'raoVn5WYl8kCpESadsvT8n90N1ku35REJ91b5c2x',
 			jsKey: 		'AQVLXlKYohvDPF4FJVyAPXpaUbh3YT2MwhRwYBaI',
-			netKey: 	'VRlbE0t7hxyLZvG2xSUT8X3D9Fnf5wMe1KuOXk2f',
 			restKey: 	'ty6cmbnYjF72IIzQXzlgB548vuCh8NOdCVUJVGmz'
 		},
 		firebase: 'https://jhcc-main.firebaseio.com/',
