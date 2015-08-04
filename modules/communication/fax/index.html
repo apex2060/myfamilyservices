@@ -79,7 +79,7 @@
 							</li>
 						</ul>
 					</div>
-					<div class="col-md-9" file-manager="tools.fax.upload">
+					<div class="col-md-9" file-manager="tools.fax.add">
 						<p>{{file}}</p>
 						<hr>
 						<p>{{fax}}</p>
@@ -118,16 +118,8 @@
 								<p><b>City:</b> {{faxNum.city}}</p>
 								<p><b>State:</b> {{faxNum.state}}</p>
 								<p><b>Assignment:</b> <input type="text" ng-model="faxNum.title"></p>
-								<div class="row">
-									<div class="col-md-6">
-										<div class="list-group">
-											<div class="list-group-item">Notification Subscriptions</div>
-											<div class="list-group-item" ng-repeat="a in faxAlerts">
-												<button type="button" class="close pull-right" ng-click="tools.alerts.remove(a, faxNum)"><span aria-hidden="true">&times;</span></button>
-												<ul ng-click="tools.alerts.focus(a)">
-								<p><b>Notify:</b> <input type="text" placeholder="Cell Number" ng-model="faxNum.alert"></p>
 
-								<div class="row" ng-show="settings.alerts">
+								<div class="row">
 									<div class="col-md-6">
 										<div class="list-group">
 											<div class="list-group-item">Notification Subscriptions</div>
