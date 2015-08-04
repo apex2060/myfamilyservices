@@ -32,6 +32,7 @@ app.lazy.controller('ComFaxCtrl', function($scope, $timeout, $http, $sce, config
 	var tools = $scope.tools = {
 		init: function(){
 			tools.number.init();
+			tools.fax.init();
 			tools.file.init();
 			Auth.tools.init().then(function(user){
 				FaxNums.tools.list()
@@ -87,7 +88,7 @@ app.lazy.controller('ComFaxCtrl', function($scope, $timeout, $http, $sce, config
 		},
 		fax: {
 			init: function(){
-				$scope.fax = {status: 'Choose a file to fax.'};
+				$scope.sendFaxResult = {status: 'Choose a file to fax.'};
 			},
 			upload: function(file){
 				Documents.upload(file).then(function(data){
@@ -101,7 +102,7 @@ app.lazy.controller('ComFaxCtrl', function($scope, $timeout, $http, $sce, config
 				if(to.length == 10)
 					to = 1+''+to;
 				else if(to.length == 7)
-					to = 1+''+from.areaCode+to;
+					to = 1+''+from.number.substr(0,3)+to;
 					
 					
 				if(to.length != 11){
@@ -109,6 +110,7 @@ app.lazy.controller('ComFaxCtrl', function($scope, $timeout, $http, $sce, config
 				}else if(!from){
 					alert('You must select the number from which you will be sending this fax.')
 				}else{
+					$scope.sendFaxResult = {status: 'Processing...'};
 					var fax = {
 						document: 	Documents.root.tools.ref(doc),
 						file: 			doc.file,
@@ -120,7 +122,13 @@ app.lazy.controller('ComFaxCtrl', function($scope, $timeout, $http, $sce, config
 						$scope.sendFaxResult = result;
 					})
 				}
-			}
+			},
+			archive: function(fax){
+				if(confirm('Archiving will remove this fax from the list.  Are you sure you want to archive this fax?')){
+					fax.archived = true;
+					Faxes.tools.save(fax)
+				}
+			},
 		},
 		alerts: {
 			listFor: function(number){
@@ -234,36 +242,6 @@ app.lazy.controller('ComFaxCtrl', function($scope, $timeout, $http, $sce, config
 			},
 			ipreview: function(file){
 				$scope.iframe = $sce.trustAsResourceUrl(file.url);
-			},
-			send: function() {
-				var file = $scope.file;
-					file.to = file.to.replace(/\D/g,'');
-				if(file.to.length != 10){
-					alert('You must enter a 10 digit phone number.')
-				}else if(!file.from){
-					alert('You must select the number from which you will be sending this fax.')
-				}else{
-					var number = 1+''+file.to;
-					$scope.file.status = 'Sending...'
-					$http.post('https://api.parse.com/1/functions/sendFax', {
-						to: number,
-						url: file.url,
-						from: file.from.number
-					}).success(function(data){
-						$scope.file.status = 'Complete'
-						$timeout(function(){
-							Faxes.tools.broadcast();
-						}, 30000)
-					}).error(function(e){
-						$scope.file.status = 'Error sending fax.'
-					})
-				}
-			},
-			archive: function(fax){
-				if(confirm('Archiving will remove this fax from the list.  Are you sure you want to archive this fax?')){
-					fax.archived = true;
-					Faxes.tools.save(fax)
-				}
 			},
 			reload: function(){
 				Faxes.tools.broadcast();

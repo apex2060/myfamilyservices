@@ -1,16 +1,16 @@
 app.factory('config', function ($http, $q) {
 	var config = {
 		domain:			'dignpave.com',
-		tempUrl: 		'https://main-jhcc-admin.c9.io',
-		secureUrl: 		'https://secure.jhcc.info',
-		devUrl: 		'https://main-jhcc-admin.c9.io',
+		tempUrl: 		'https://jhcc-dev.parseapp.com',
+		secureUrl: 		'https://jhcc-dev.parseapp.com',
+		devUrl: 		'https://jhcc-dev.parseapp.com',
 		parse: {
 			root: 		'https://api.parse.com/1',
-			appId: 		'pzlNsaEz6hNmIntH42OOwiFfDBNZAB1YNL1oj3fV',
-			jsKey: 		'AQVLXlKYohvDPF4FJVyAPXpaUbh3YT2MwhRwYBaI',
-			restKey: 	'ty6cmbnYjF72IIzQXzlgB548vuCh8NOdCVUJVGmz'
+			appId: 		'SJbkSrB2bnL7UWNZuiQGbn4uaUxYlxutrIDZMB7a',
+			jsKey: 		'rKMoxwpALKEh5hlFiVeq8NpuUBE7e6gW1qOkpscu',
+			restKey: 	'OBdAES3hFNJecckqBxnWZkOiLuqog7MWtxIgjHeZ'
 		},
-		firebase: 'https://jhcc-main.firebaseio.com/',
+		firebase: 'https://jhcc-dev.firebaseio.com/',
 		google: {
 			auth_uri: "https://accounts.google.com/o/oauth2/auth",
 			client_secret: "JkoAr146jvywyeurbVLU2XtH",

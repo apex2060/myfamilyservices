@@ -4,7 +4,7 @@
 		<ul class="nav nav-tabs" role="tablist">
 			<li role="presentation" class="active"><a href="#sent" aria-controls="sent" role="tab" data-toggle="tab">Faxes Sent</a></li>
 			<li role="presentation"><a href="#received" aria-controls="received" role="tab" data-toggle="tab">Faxes Received</a></li>
-			<li role="presentation"><a href="#new" aria-controls="new" role="tab" data-toggle="tab">Send A Fax</a></li>
+			<li role="presentation"><a href="#send" aria-controls="new" role="tab" data-toggle="tab">Send A Fax</a></li>
 			<li role="presentation" ng-show="user.is('Admin')"><a href="#manage" aria-controls="manage" role="tab" data-toggle="tab">Manage Numbers</a></li>
 		</ul>
 
@@ -22,7 +22,7 @@
 							<li class="list-group-item" ng-repeat="fax in faxesSent" ng-click="tools.file.ipreview(fax.fax)">
 								<span>{{fax.recepients[0].number}} ({{fax.recepients.length}})</span>
 								<a class="pull-right btn btn-xs btn-info" target="_new" href="{{fax.fax.url}}"><i class="fa fa-share-square-o"></i></a>
-								<a class="pull-right btn btn-xs btn-info" ng-click="tools.file.archive(fax)"><i class="fa fa-eye-slash"></i></a>
+								<a class="pull-right btn btn-xs btn-info" ng-click="tools.fax.archive(fax)"><i class="fa fa-eye-slash"></i></a>
 							</li>
 						</ul>
 					</div>
@@ -55,11 +55,11 @@
 			</div>
 			
 			<!--SEND A FAX-->
-			<div role="tabpanel" class="tab-pane" id="new">
+			<div role="tabpanel" class="tab-pane" id="send">
 				<div class="row">
 					<div class="col-md-3">
 						<ul class="list-group">
-							<li class="list-group-item">{{fax.status}}</li>
+							<li class="list-group-item">{{sendFaxResult.status}}</li>
 							<li class="list-group-item">
 								<div class="input-group">
 									<a class="input-group-addon">From: </a>
