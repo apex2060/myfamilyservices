@@ -1,7 +1,7 @@
 <div class="container">
 	<div class="well">
 		<h1>Admin Portal</h1>
-		<div class="row" ng-show="user.is('Manager')">
+		<div class="row" ng-show="user.is('Admin')">
 			<div class="col-md-4">
 				<div class="panel panel-primary">
 					<div class="panel-heading">Internal Tools</div>
@@ -33,7 +33,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="col-md-4">
+			<div class="col-md-4" ng-show="user.is('It')">
 				<div class="panel panel-primary">
 					<div class="panel-heading">Website API's</div>
 					<div class="list-group">
