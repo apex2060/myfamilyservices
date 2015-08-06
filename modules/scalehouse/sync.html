@@ -1,0 +1,17 @@
+<div class="row" ng-init="tools.ticket.init()">
+	<div class="col-md-6">
+		<ul class="list-group">
+			<li class="list-group-item active">Un-Synced</li>
+			<li class="list-group-item" ng-repeat="ticket in ticketCache">{{ticket}}</li>
+		</ul>
+	</div>
+	<div class="col-md-6">
+		<ul class="list-group">
+			<li class="list-group-item active">Synced</li>
+			<li class="list-group-item" ng-repeat="ticket in ticketSync">{{ticket}}</li>
+		</ul>
+	</div>
+	<div class="col-md-12">
+		<div class="btn btn-block btn-info" ng-click="tools.ticket.cacheUp()">Start Sync!</div>
+	</div>
+</div>

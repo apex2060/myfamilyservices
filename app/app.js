@@ -29,7 +29,6 @@ app.config(function($routeProvider,$compileProvider,$controllerProvider,$provide
 		}
 		
 		
-		
 		if(parent.indexOf(module) != -1)
 			includes.push('modules/'+module+'/ctrl.js');
 		if(child.indexOf(module) != -1)

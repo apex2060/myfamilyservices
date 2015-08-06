@@ -295,19 +295,26 @@ app.lazy.controller('ScaleCtrl', function($rootScope, $scope, $routeParams, $htt
 				$scope.ticketContracts 	= [];
 				$scope.ticketMaterials 	= [];
 				tools.ticket.listVehicles();
-				var tc = localStorage.getItem('ticketCache')
-				if(tc && tc.length)
+				$scope.ticketCache = null;
+				try{
 					$scope.ticketCache = angular.fromJson(localStorage.getItem('ticketCache'));
-				else
+					if(!$scope.ticketCache)
+						$scope.ticketCache = [];
+				}catch(error){
 					$scope.ticketCache = [];
+				}
 			},
 			localSave: function(ticket){
 				angular.copy(ticket);
-				var localTickets = 	localStorage.getItem('localScaleTickets');
-				if(!localTickets)
+				var localTickets = null;
+				try{
+					localTickets = angular.fromJson(localStorage.getItem('localScaleTickets'));
+					if(!localTickets)
+						localTickets = [];
+				}catch(error){
 					localTickets = [];
-				else
-					localTickets = JSON.parse(localTickets);
+				}
+
 				localTickets.push(ticket);
 				localTickets = JSON.stringify(localTickets);
 				localStorage.setItem('localScaleTickets', localTickets)
@@ -317,7 +324,7 @@ app.lazy.controller('ScaleCtrl', function($rootScope, $scope, $routeParams, $htt
 				if(!localTickets)
 					localTickets = [];
 				else
-					localTickets = JSON.parse(localTickets);
+					localTickets = angular.fromJson(localTickets);
 					var payload = {
 						localTickets: localTickets
 					}
@@ -334,26 +341,39 @@ app.lazy.controller('ScaleCtrl', function($rootScope, $scope, $routeParams, $htt
 				localStorage.removeItem('lastScaleTicket');
 			},
 			cacheUp: function(){
-				var deferred = $q.defer();
-				var ticket = null;
-				if($scope.ticketCache.length > 0)
-					ticket = $scope.ticketCache.shift();
-				if(ticket)
-					Tickets.tools.save(ticket).then(function(result){
-						Contracts.tools.broadcast();
-						localStorage.setItem('ticketCache', $scope.ticketCache)
-						if($scope.ticketCache.length > 0)
-							tools.ticket.cacheUp().then(function(tickets){
-								tickets.push(result)
-								deferred.resolve(tickets);
-							})
-						else
-							deferred.resolve([result]);
-					})
-				else
-					deferred.resolve('No tickets to sync.')
+				var promises = [];
 				
-				return deferred.promise;
+				var cache = $scope.ticketCache;
+				$scope.ticketSync = [];
+				for(var i=0; i<cache.length; i++){
+					promises.push((function(ticket){
+						var deferred = $q.defer();
+						Tickets.tools.save(ticket).then(function(result){
+							var i = cache.indexOf(ticket);
+							$scope.ticketSync.push(result);
+							cache.splice(i, 1);
+							deferred.resolve({status:'success', ticket:result});
+						}, function(e){
+							var i = cache.indexOf(ticket);
+							try{
+								var error = angular.fromJson(e.error);
+								if(error.code=='409'){
+									$scope.ticketSync.push(ticket);
+									cache.splice(i, 1);
+									deferred.resolve({status:'success', ticket:ticket});
+								}else
+									deferred.resolve({status:'error', ticket:ticket});
+							}catch(e){
+								deferred.resolve({status:'error', ticket:ticket});
+							}
+						});
+						return deferred.promise;
+					})(cache[i]))
+				}
+				$q.all(promises).then(function(results){
+					localStorage.setItem('ticketCache', angular.toJson(cache));
+					Contracts.tools.broadcast();
+				});
 			},
 			save: function(ticket){
 				//Do a bunch of formating
@@ -387,11 +407,6 @@ app.lazy.controller('ScaleCtrl', function($rootScope, $scope, $routeParams, $htt
 					//Save to the cache and then combine on complete
 					$scope.ticketCache.push(ticket);
 					localStorage.setItem('ticketCache', angular.toJson($scope.ticketCache));
-					
-					tools.ticket.cacheUp().then(function(tickets){
-						it.tickets = tickets;
-						$scope.receipt = angular.extend(tickets[0], receipt);
-					});
 				});
 			},
 			automate: function(vehicleId){
