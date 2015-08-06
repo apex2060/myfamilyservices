@@ -54,7 +54,7 @@
 	
 	<body ng-swipe-left="tools.side.swipe('left')"  ng-swipe-right="tools.side.swipe('right')" ng-controller="SiteCtrl">
 		<header ng-include="'static/header.html'"></header>
-		<section class="view {{status}}" id="{{view}}" ng-view>Loading Awesomeness...</section>
+		<section class="view {{status}}" id="{{view}}" ng-view><h1 class="fancy">Loading...</h1></section>
 		<footer ng-include="'static/footer.html'"></footer>
 		<div class="noprint alerts">
 			<div class="alert alert-{{alert.type}}" ng-repeat="alert in alerts">
