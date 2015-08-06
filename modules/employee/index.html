@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container" ng-show="user.is('Employee')">
 	<div class="well">
 		<h1>Employee Portal</h1>
 		<div class="row">
@@ -8,6 +8,10 @@
 					<div class="list-group">
 						<a class="list-group-item" target="_new" href="https://webmail.dignpave.com/owa/">Webmail</a>
 						<a class="list-group-item" target="_new" href="https://jhamilton.ecmserp.com/ess">HRSS</a>
+						<a class="list-group-item" target="_new" href="http://calendar.google.com">Calendar</a>
+						<a class="list-group-item" target="_new" href="http://drive.google.com">Documents</a>
+						<a class="list-group-item" target="_new" href="http://keep.google.com">Notes</a>
+						<a class="list-group-item" target="_new" href="https://www.google.com/contacts/u/0/?hl=en&tab=oC#contacts/group/27/Directory">Contacts</a>
 						<!--<a class="list-group-item" href="#">Employee Directory</a>-->
 						<!--<a class="list-group-item" href="#">Job Locations</a>-->
 						<!--<a class="list-group-item" href="#/employee/profile">Manage Profile</a>-->
@@ -21,7 +25,8 @@
 					<div class="list-group">
 						<a class="list-group-item" target="_new" href="https://docs.google.com/forms/d/19dkkPO5Xje8Livx4muBlBViXvCkanmwM4X1mQuP8nEM/viewform">Request IT Support</a>
 						<a class="list-group-item" target="_new" href="https://docs.google.com/forms/d/1Ad5eVFU1ChifvRNan9tRjFK77rELHrrzeHfuv-uH3Ug/viewform">Request IT Equipment</a>
-						<a class="list-group-item" target="_new" href="https://tools.google.com/dlpage/cloudprintdriver">Cloud Print Client</a>
+						<a class="list-group-item" target="_new" href="https://tools.google.com/dlpage/cloudprintdriver">Google Cloud Print</a>
+						<a class="list-group-item" target="_new" href="https://tools.google.com/dlpage/drive/index.html?hl=en#eula">Google Drive</a>
 					</div>
 				</div>
 			</div>
@@ -36,21 +41,12 @@
 			<!--		</div>-->
 			<!--	</div>-->
 			<!--</div>-->
-			<div class="col-md-4" ng-show="user.is('Employee')">
+			<div class="col-md-4">
 				<div class="panel panel-primary">
-					<div class="panel-heading">Employee</div>
+					<div class="panel-heading">Tools</div>
 					<div class="list-group">
 						<a class="list-group-item" href="http://secure.jhcc.info/#/communication/fax">Fax</a>
-					</div>
-				</div>
-			</div>
-			<div class="col-md-4" ng-show="user.is('Admin')">
-				<div class="panel panel-primary">
-					<div class="panel-heading">Admin</div>
-					<div class="list-group">
-						<a class="list-group-item" href="#/admin/outpost">Outposts</a>
-						<a class="list-group-item" href="#/admin/roles">Roles</a>
-						<a class="list-group-item" target="_new" href="https://www.kbremote.net/#">Kiosk Browser</a>
+						<a class="list-group-item" href="#/scalehouse" ng-show="user.is('ScaleMaster')">Scale House</a>
 					</div>
 				</div>
 			</div>

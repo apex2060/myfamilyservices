@@ -19,7 +19,7 @@
 								<span>Sent</span>
 								<a class="pull-right badge" ng-click="tools.file.reload()"><i class="fa fa-refresh"></i></a>
 							</li>
-							<li class="list-group-item" ng-repeat="fax in faxesSent" ng-click="tools.file.ipreview(fax.fax)">
+							<li class="list-group-item" ng-repeat="fax in faxesSent" ng-click="tools.file.ipreview(fax)">
 								<span>{{fax.recepients[0].number}} ({{fax.recepients.length}})</span>
 								<a class="pull-right btn btn-xs btn-info" target="_new" href="{{fax.fax.url}}"><i class="fa fa-share-square-o"></i></a>
 								<a class="pull-right btn btn-xs btn-info" ng-click="tools.fax.archive(fax)"><i class="fa fa-eye-slash"></i></a>
@@ -41,7 +41,7 @@
 								<span>Received</span>
 								<a class="pull-right badge" ng-click="tools.file.reload()"><i class="fa fa-refresh"></i></a>
 							</li>
-							<li class="list-group-item" ng-repeat="fax in faxesReceived" ng-click="tools.file.ipreview(fax.fax)">
+							<li class="list-group-item" ng-repeat="fax in faxesReceived" ng-click="tools.file.ipreview(fax)">
 								<span>{{fax.remoteNumber}}</span>
 								<a class="pull-right btn btn-xs btn-info" target="_new" href="{{fax.fax.url}}"><i class="fa fa-share-square-o"></i></a>
 								<a class="pull-right btn btn-xs btn-info" ng-click="tools.fax.archive(fax)"><i class="fa fa-eye-slash"></i></a>
@@ -49,6 +49,8 @@
 						</ul>
 					</div>
 					<div class="col-md-9">
+						<script src="https://apis.google.com/js/platform.js" async defer></script>
+						<div id="savetodrive-div"></div>
 						<iframe ng-src="{{iframe}}" style="width: 100%; height: 500px;"></iframe>
 					</div>
 				</div>

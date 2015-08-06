@@ -241,7 +241,12 @@ app.lazy.controller('ComFaxCtrl', function($scope, $timeout, $http, $sce, config
 				$scope.faxPreview = file.url
 			},
 			ipreview: function(file){
-				$scope.iframe = $sce.trustAsResourceUrl(file.url);
+				$scope.iframe = $sce.trustAsResourceUrl(file.fax.url);
+				gapi.savetodrive.render('savetodrive-div', {
+					src: file.fax.url,
+					filename: 'Fax From: '+file.remoteNumber+'.pdf',
+					sitename: 'James Hamilton Construction Co.'
+				});
 			},
 			reload: function(){
 				Faxes.tools.broadcast();
