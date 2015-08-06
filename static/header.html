@@ -22,10 +22,10 @@
 						<li><a target="_new" href="https://webmail.dignpave.com/owa">Email</a></li>
 						<li><a target="_new" href="http://drive.jhcc.info">Drive</a></li>
 						<li><a target="_new" href="http://calendar.jhcc.info">Calendar</a></li>
-						<li><a target="_new" href="http://keep.google.com">Notes</a></li>
+						<!--<li><a target="_new" href="http://keep.google.com">Notes</a></li>-->
 						<li class="divider"></li>
 						<li><a href="#/employee">Employee Portal</a></li>
-						<li ng-show="user.is('Admin')"><a href="#/admin">Admin Portal</a></li>
+						<li ng-show="user.is('Manager')"><a href="#/admin">Admin Portal</a></li>
 						<li class="divider"></li>
 						<li><a ng-click="tools.clearStorage()">Clear Storage</a></li>
 						<li><a ng-click="tools.user.logout()">Logout</a></li>
