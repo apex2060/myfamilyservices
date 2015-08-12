@@ -43,6 +43,7 @@
 								<a class="pull-right badge" ng-click="tools.fax.reload()"><i class="fa fa-refresh"></i></a>
 							</li>
 							<li class="list-group-item" ng-repeat="fax in faxesReceived" ng-click="tools.fax.focus(fax)">
+								<i class="fa fa-exclamation-triangle" ng-show="fax.status=='failure'" title="Fax Failed: {{fax.details.recipients[0].error_code}}"></i>
 								<span>{{fax.remoteNumber}}</span>
 								<a class="pull-right btn btn-xs btn-info" target="_new" href="{{fax.fax.url}}"><i class="fa fa-share-square-o"></i></a>
 								<a class="pull-right btn btn-xs btn-info" ng-click="tools.fax.archive(fax)"><i class="fa fa-eye-slash"></i></a>
