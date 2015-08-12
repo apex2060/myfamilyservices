@@ -17,9 +17,10 @@
 						<ul class="list-group">
 							<li class="list-group-item active">
 								<span>Sent</span>
-								<a class="pull-right badge" ng-click="tools.file.reload()"><i class="fa fa-refresh"></i></a>
+								<a class="pull-right badge" ng-click="tools.fax.reload()"><i class="fa fa-refresh"></i></a>
 							</li>
-							<li class="list-group-item" ng-repeat="fax in faxesSent" ng-click="tools.file.ipreview(fax)">
+							<li class="list-group-item" ng-repeat="fax in faxesSent" ng-click="tools.fax.focus(fax)">
+								<i class="fa fa-exclamation-triangle" ng-show="fax.status=='failure'" title="Fax Failed: {{fax.details.recipients[0].error_code}}"></i>
 								<span>{{fax.recepients[0].number}} ({{fax.recepients.length}})</span>
 								<a class="pull-right btn btn-xs btn-info" target="_new" href="{{fax.fax.url}}"><i class="fa fa-share-square-o"></i></a>
 								<a class="pull-right btn btn-xs btn-info" ng-click="tools.fax.archive(fax)"><i class="fa fa-eye-slash"></i></a>
@@ -27,7 +28,7 @@
 						</ul>
 					</div>
 					<div class="col-md-9">
-						<iframe ng-src="{{iframe}}" style="width: 100%; height: 500px;"></iframe>
+						<iframe ng-src="{{tools.file.render(fax.fax.url).url}}" style="width: 100%; height: 500px;"></iframe>
 					</div>
 				</div>
 			</div>
@@ -39,9 +40,9 @@
 						<ul class="list-group">
 							<li class="list-group-item active">
 								<span>Received</span>
-								<a class="pull-right badge" ng-click="tools.file.reload()"><i class="fa fa-refresh"></i></a>
+								<a class="pull-right badge" ng-click="tools.fax.reload()"><i class="fa fa-refresh"></i></a>
 							</li>
-							<li class="list-group-item" ng-repeat="fax in faxesReceived" ng-click="tools.file.ipreview(fax)">
+							<li class="list-group-item" ng-repeat="fax in faxesReceived" ng-click="tools.fax.focus(fax)">
 								<span>{{fax.remoteNumber}}</span>
 								<a class="pull-right btn btn-xs btn-info" target="_new" href="{{fax.fax.url}}"><i class="fa fa-share-square-o"></i></a>
 								<a class="pull-right btn btn-xs btn-info" ng-click="tools.fax.archive(fax)"><i class="fa fa-eye-slash"></i></a>
@@ -51,7 +52,7 @@
 					<div class="col-md-9">
 						<!--<script src="https://apis.google.com/js/platform.js" async defer></script>-->
 						<!--<div id="savetodrive-div"></div>-->
-						<iframe ng-src="{{iframe}}" style="width: 100%; height: 500px;"></iframe>
+						<iframe ng-src="{{tools.file.render(fax.fax.url).url}}" style="width: 100%; height: 500px;"></iframe>
 					</div>
 				</div>
 			</div>
@@ -82,8 +83,9 @@
 						</ul>
 					</div>
 					<div class="col-md-9" file-manager="tools.fax.upload">
-						<canvas id="pdfview" ng-hide="faxPreview" style="width:100%;">Drop File Here</canvas>
-						<img ng-src="{{faxPreview}}" ng-show="faxPreview" style="max-width:100%;"></img>
+						<h1 ng-hide="faxPreview">Drop File Here</h1>
+						<iframe ng-src="{{preview.pdf.url}}" ng-show="preview.pdf" style="width: 100%; height: 500px;"></iframe>
+						<img ng-src="{{preview.img.url}}" ng-show="preview.img" style="max-width:100%;"></img>
 					</div>
 				</div>
 			</div>

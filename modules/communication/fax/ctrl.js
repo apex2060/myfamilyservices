@@ -33,7 +33,6 @@ app.lazy.controller('ComFaxCtrl', function($scope, $timeout, $http, $sce, config
 		init: function(){
 			tools.number.init();
 			tools.fax.init();
-			tools.file.init();
 			Auth.tools.init().then(function(user){
 				FaxNums.tools.list()
 				Faxes.tools.list()
@@ -90,9 +89,14 @@ app.lazy.controller('ComFaxCtrl', function($scope, $timeout, $http, $sce, config
 			init: function(){
 				$scope.sendFaxResult = {status: 'Choose a file to fax.'};
 			},
+			focus: function(fax, ptr){
+				$scope.fax = fax;
+			},
 			upload: function(file){
 				Documents.upload(file).then(function(data){
-					tools.file.renderPdf(file);
+					var preview = tools.file.render(file.url);
+					$scope.preview = {};
+					$scope.preview[preview.type] = preview;
 					$scope.file = data;
 				})
 			},
@@ -129,6 +133,9 @@ app.lazy.controller('ComFaxCtrl', function($scope, $timeout, $http, $sce, config
 					Faxes.tools.save(fax)
 				}
 			},
+			reload: function(){
+				Faxes.tools.broadcast();
+			}
 		},
 		alerts: {
 			listFor: function(number){
@@ -171,85 +178,15 @@ app.lazy.controller('ComFaxCtrl', function($scope, $timeout, $http, $sce, config
 			}
 		},
 		file: {
-			init: function(){
-				$scope.faxPreview = null;
-				var file = {status: 'Choose a file to fax.'}
-				if($scope.file && $scope.file.from)
-					file.from = $scope.file.from;
-				if($scope.file && $scope.file.to)
-					file.to = $scope.file.to;
-				$scope.file = file;
-			},
-			add: function(file){
-				$timeout(function(){ 
-					var pieces = file.attr.name.split('.');
-					file.name = pieces[0];
-					file.suffix = pieces[pieces.length-1].toLowerCase();
-					
-					if(acceptedFiles.indexOf(file.suffix) != -1){
-						file.status = 'Uploading File... Please Wait';
-						if($scope.file && $scope.file.from)
-							file.from = $scope.file.from;
-						if($scope.file && $scope.file.to)
-							file.to = $scope.file.to;
-						$scope.file = file;
-						tools.file.upload(file)
-					}else{
-						$scope.file = $scope.file || {};
-						$scope.file.status = 'You can only send files of type: '+JSON.stringify(acceptedFiles)
-					}
-				});
-			},
-			upload: function(file) {
-				var src = file.src;
-				var name = file.name;
-				FileService.upload(name, src).then(function(data) {
-					$scope.result = data;
-					file.url = data._url;
-					file.status = 'Upload Complete';
-					if(file.suffix == 'pdf')
-						tools.file.renderPdf(file);
-					else if(['tif','jpg','png'].indexOf(file.suffix) != -1)
-						tools.file.renderImg(file);
-				});
-			},
-			renderPdf: function(file){
-				PDFJS.getDocument(file.url).then(function(pdf) {
-					pdf.getPage(1).then(function(page) {
-						var scale = 1.5;
-						var viewport = page.getViewport(scale);
-
-						var canvas = document.getElementById('pdfview');
-						var context = canvas.getContext('2d');
-						canvas.height = viewport.height;
-						canvas.width = viewport.width;
-
-						var renderContext = {
-							canvasContext: context,
-							viewport: viewport
-						};
-						page.render(renderContext);
-						
-						var desiredWidth = 100;
-						var viewport = page.getViewport(1);
-						var scale = desiredWidth / viewport.width;
-						var scaledViewport = page.getViewport(scale);
-					});
-				});
-			},
-			renderImg: function(file){
-				$scope.faxPreview = file.url
-			},
-			ipreview: function(file){
-				$scope.iframe = $sce.trustAsResourceUrl(file.fax.url);
-				gapi.savetodrive.render('savetodrive-div', {
-					src: file.fax.url,
-					filename: 'Fax From: '+file.remoteNumber+'.pdf',
-					sitename: 'James Hamilton Construction Co.'
-				});
-			},
-			reload: function(){
-				Faxes.tools.broadcast();
+			render: function(url){
+				if(url){
+					var pcs = url.split('.')
+					var suffix = pcs[pcs.length-1].toLowerCase();
+					if (suffix == 'pdf')
+						return {type:'pdf', url:$sce.trustAsResourceUrl('https://drive.google.com/viewerng/viewer?url='+url+'&embedded=true')}
+					else if (['tif', 'jpg', 'png'].indexOf(suffix) != -1)
+						return {type:'img', url:$sce.trustAsResourceUrl(url)}
+				}
 			}
 		}
 	}
