@@ -813,3 +813,66 @@ app.factory('Documents', function ($rootScope, $http, $q, Auth, Data, FileServic
 	it.Documents = Documents;
 	return Documents;
 });
+
+app.factory('Dados', function($q, config, Auth){
+	/*
+		The purpose of this factory is to provide a simple interface between data and Parse.
+		- Realtime updates
+		- Offline Capable
+		- Sync Ability
+		- Dependent data modules
+			If one data source referrs to a secondary data source, then it is necissary to resolve the dependancies first.
+		- Provide immediate ID, provide incramental ID if required.
+	*/
+	String.prototype.hashCode = function() {
+		for(var ret = 0, i = 0, len = this.length; i < len; i++)
+			ret = (31 * ret + this.charCodeAt(i)) << 0;
+		
+		return ret;
+	};
+		
+	var ListaDeDados 	= [];
+	var defaults 		= {
+		className: 		'NewClass',
+		autoUpdate:		true,
+		localSave: 		true,
+		quantity: 		50,
+		query: 			'',
+		dependencies: 	[],
+	}
+	function hash(params){
+		var keys = Object.keys(params);
+		var string = params.className+params.query+params.quantity;
+		for(var ret = 0, i = 0, len = string.length; i < len; i++)
+			ret = (31 * ret + string.charCodeAt(i)) << 0;
+		return 'P'+ret+'D';
+	}
+	function Connection(params){ //Used to create an actual instance of the connection.  Instance should not be called publically.
+		var ds = this;
+		angular.extend(this, params);
+		this.deferred = $q.defer();
+		ds.tools = {
+			
+		}
+	}
+
+	
+	var Dados = {
+		Data: function(){
+			
+		},
+		List: function(){ //returns a list of all registered data objects.
+			return ListaDeDados;
+		},
+		Connection: function(params){ //Used to create a new connection.
+			if(typeof(params) != 'object')
+				params = angular.extend(defaults, {className: params})
+			params.hash = hash(params);
+			if(!ListaDeDados[params.className])
+				ListaDeDados[params.className] = new Connection(params);
+				
+			return ListaDeDados[params.className];
+		}
+	}
+	return Dados;
+})
