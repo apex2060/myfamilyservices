@@ -814,7 +814,8 @@ app.factory('Documents', function ($rootScope, $http, $q, Auth, Data, FileServic
 	return Documents;
 });
 
-app.factory('Dados', function($q, config, Auth){
+
+app.factory('Dados', function($q, $rootScope, $http, config, Auth){
 	/*
 		The purpose of this factory is to provide a simple interface between data and Parse.
 		- Realtime updates
@@ -824,13 +825,8 @@ app.factory('Dados', function($q, config, Auth){
 			If one data source referrs to a secondary data source, then it is necissary to resolve the dependancies first.
 		- Provide immediate ID, provide incramental ID if required.
 	*/
-	String.prototype.hashCode = function() {
-		for(var ret = 0, i = 0, len = this.length; i < len; i++)
-			ret = (31 * ret + this.charCodeAt(i)) << 0;
 		
-		return ret;
-	};
-		
+	var parseUrl = config.parse.root+'/classes/';
 	var ListaDeDados 	= [];
 	var defaults 		= {
 		className: 		'NewClass',
@@ -838,40 +834,143 @@ app.factory('Dados', function($q, config, Auth){
 		localSave: 		true,
 		quantity: 		50,
 		query: 			'',
-		dependencies: 	[],
+		dependencies: 	[]
 	}
 	function hash(params){
 		var keys = Object.keys(params);
-		var string = params.className+params.query+params.quantity;
+		var string = params.className+params.autoUpdate+params.localSave+params.query+params.quantity;
 		for(var ret = 0, i = 0, len = string.length; i < len; i++)
 			ret = (31 * ret + string.charCodeAt(i)) << 0;
 		return 'P'+ret+'D';
 	}
 	function Connection(params){ //Used to create an actual instance of the connection.  Instance should not be called publically.
 		var ds = this;
-		angular.extend(this, params);
-		this.deferred = $q.defer();
-		ds.tools = {
+			ds.deferred 		= $q.defer();
+			ds.params 			= params;
+			ds.state 			= {};
+			ds.params.hash 		= hash(params);
+			ds.db 				= new PouchDB(ds.params.hash);
 			
+		if(ds.params.localSave){
+			ds.db.allDocs({include_docs: true, descending: true}, function(err, doc) {
+				ds.list = doc.rows;
+			});
+			ds.db.changes({
+				since: 'now',
+					live: true,
+					include_docs: true
+				}).on('change', function(change) {
+					ds.db.allDocs({include_docs: true, descending: true}, function(err, doc) {
+						ds.list = doc.rows;
+					});
+					$rootScope.$broadcast(ds.params.hash, 'change');
+					if(change.doc.local){ //All changes made locally need to be synced with the parse DB.
+						var item = angular.copy(change.doc);
+						item.ref = item._id;
+						item.rev = item._rev;
+						delete item._id;
+						delete item._rev;
+						delete item.local;
+						
+						if(item.objectId){
+							var objectId = item.objectId;
+							delete item.objectId;
+							delete item.updatedAt;
+							delete item.createdAt;
+							delete item.syncError;
+							$http.put(parseUrl + ds.params.className + '/' + objectId, item).success(function(data) {
+								item.objectId 	= change.doc.objectId;
+								item.createdAt 	= change.doc.createdAt;
+								item.updatedAt 	= data.updatedAt;
+								item._id 		= item.ref;
+								item._rev 		= item.rev;
+								delete item.ref;
+								delete item.rev;
+								ds.db.put(item)
+							}).error(function(e) {
+								alert('There was an error updating an existing item in parse DB.')
+								item.syncError 	= e;
+								item._id 		= item.ref;
+								item._rev 		= item.rev;
+								delete item.ref;
+								delete item.rev;
+								ds.db.put(item)
+							})
+						}else{
+							$http.post(parseUrl + ds.params.className, item).success(function(data) {
+								item.objectId 	= data.objectId;
+								item.createdAt 	= data.createdAt;
+								item._id 		= item.ref;
+								item._rev 		= item.rev;
+								delete item.ref;
+								delete item.rev;
+								ds.db.put(item)
+							}).error(function(e) {
+								alert('There was an error creating new item in parse DB.')
+								item.syncError 	= e;
+								item._id 		= item.ref;
+								item._rev 		= item.rev;
+								delete item.ref;
+								delete item.rev;
+								ds.db.put(item)
+							})
+						}
+					}
+				});
 		}
+		
+		ds.tools = {
+			// Listen, Sync, 
+			item: {
+				list: function(){
+					var deferred = $q.defer();
+					ds.db.allDocs({include_docs: true, descending: true}, function(err, doc) {
+						deferred.resolve(doc.rows);
+					});
+					return deferred.promise;
+				},
+				save: function(item){
+					//Save locally >>> then update parse.
+					var deferred = $q.defer();
+					item.local = true;
+					if(!item._id)
+						item._id = Math.floor((Math.abs(Math.sin(moment().format('x')) * 2000000000000)) % 2000000000000).toString(36);
+					ds.db.put(item)
+					return deferred.promise;
+				},
+				delete: function(item){
+					
+				}
+			},
+			permissions: {
+				
+			},
+			relations: {
+				
+			}
+		}
+		return ds;
 	}
 
 	
 	var Dados = {
-		Data: function(){
+		data: function(){
 			
 		},
-		List: function(){ //returns a list of all registered data objects.
+		list: function(){ //returns a list of all registered data objects.
 			return ListaDeDados;
 		},
-		Connection: function(params){ //Used to create a new connection.
+		connection: function(params){ //Used to create a new connection.
 			if(typeof(params) != 'object')
 				params = angular.extend(defaults, {className: params})
 			params.hash = hash(params);
-			if(!ListaDeDados[params.className])
-				ListaDeDados[params.className] = new Connection(params);
+			if(!ListaDeDados[params.hash])
+				ListaDeDados[params.hash] = new Connection(params);
 				
-			return ListaDeDados[params.className];
+			return ListaDeDados[params.hash];
+		},
+		acl: {
+			
 		}
 	}
 	return Dados;

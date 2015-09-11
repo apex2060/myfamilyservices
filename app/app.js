@@ -48,7 +48,8 @@ app.config(function($routeProvider,$compileProvider,$controllerProvider,$provide
 				includes.push('modules/'+module+'/'+view+'/ctrl.js');
 			else
 				includes.push('modules/'+module+'/ctrl.js');
-
+				
+		console.log(includes)
 		if(includes.length)
 			require(includes, function () {
 				deferred.resolve();
