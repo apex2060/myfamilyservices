@@ -999,25 +999,26 @@ app.factory('Dados', function($q, $rootScope, $http, config, Auth){
 					console.log('parseItem', response)
 				});
 			},
-			syncAllFromParse: function(){
-				$http.get('https://api.parse.com/1/classes/'+ds.params.className).then(function(response){
-					var list = response.data.results;
-					// for(var i=0; i<list.length; i++)
-						// tools. []TODO
-						var item = list[i]
-						ds.db.get(snap.localId).then(function(doc) {
-							if (doc.updatedAt !== snap.updatedAt)
-								if (snap.localDb == ds.params.hash)
-									privateTools.syncFromParse(doc)
-								else
-									ds.state.data = 'parseChange'
-						}).catch(function(error) {
-							//Item does not exist in DB --- fetch full query for re-sync
-							ds.state.data = 'parseChange'
-						})
-					}
-				});
-			},
+			// [] TODO
+			// syncAllFromParse: function(){
+			// 	$http.get('https://api.parse.com/1/classes/'+ds.params.className).then(function(response){
+			// 		var list = response.data.results;
+			// 		for(var i=0; i<list.length; i++)
+			// 			tools.
+			// 			var item = list[i]
+			// 			ds.db.get(snap.localId).then(function(doc) {
+			// 				if (doc.updatedAt !== snap.updatedAt)
+			// 					if (snap.localDb == ds.params.hash)
+			// 						privateTools.syncFromParse(doc)
+			// 					else
+			// 						ds.state.data = 'parseChange'
+			// 			}).catch(function(error) {
+			// 				//Item does not exist in DB --- fetch full query for re-sync
+			// 				ds.state.data = 'parseChange'
+			// 			})
+			// 		}
+			// 	});
+			// },
 			saveLocally: function(item){
 				
 			}
