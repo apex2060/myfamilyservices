@@ -830,15 +830,12 @@ app.factory('Dados', function($q, $rootScope, $http, config, Auth){
 	var ListaDeDados 	= [];
 	var defaults 		= {
 		className: 		'NewClass',
-		autoUpdate:		true,
-		localSave: 		true,
-		quantity: 		50,
 		query: 			'',
 		dependencies: 	[]
 	}
 	function hash(params){
 		var keys = Object.keys(params);
-		var string = params.className+params.autoUpdate+params.localSave+params.query+params.quantity;
+		var string = params.className+params.query;
 		for(var ret = 0, i = 0, len = string.length; i < len; i++)
 			ret = (31 * ret + string.charCodeAt(i)) << 0;
 		return 'P'+ret+'D';
@@ -847,78 +844,195 @@ app.factory('Dados', function($q, $rootScope, $http, config, Auth){
 		var ds = this;
 			ds.deferred 		= $q.defer();
 			ds.params 			= params;
-			ds.state 			= {};
-			ds.params.hash 		= hash(params);
-			ds.db 				= new PouchDB(ds.params.hash);
-			
-		if(ds.params.localSave){
-			ds.db.allDocs({include_docs: true, descending: true}, function(err, doc) {
-				ds.list = doc.rows;
+			ds.state 			= {sync: 'initial'};
+			ds.db 				= new PouchDB(ds.params.hash, {auto_compaction: true});
+			ds.fire 			= new Firebase(config.firebase+ds.params.className);
+		it[ds.params.className+'000'+ds.params.hash] = ds;
+		//GET LOCAL LIST FIRST
+		ds.db.allDocs({include_docs: true, descending: true}, function(err, doc) {
+			ds.list = doc.rows;
+		});
+		//LISTEN FOR LOCAL CHANGES
+		ds.db.changes({
+			since: 'now',
+				live: true,
+				include_docs: true
+			}).on('change', function(change) {
+				ds.db.allDocs({include_docs: true, descending: true}, function(err, doc) {
+					ds.list = doc.rows;
+				});
+				$rootScope.$broadcast(ds.params.hash, change.doc);
 			});
-			ds.db.changes({
-				since: 'now',
-					live: true,
-					include_docs: true
-				}).on('change', function(change) {
-					ds.db.allDocs({include_docs: true, descending: true}, function(err, doc) {
-						ds.list = doc.rows;
-					});
-					$rootScope.$broadcast(ds.params.hash, 'change');
-					if(change.doc.local){ //All changes made locally need to be synced with the parse DB.
-						var item = angular.copy(change.doc);
-						item.ref = item._id;
-						item.rev = item._rev;
-						delete item._id;
-						delete item._rev;
-						delete item.local;
-						
-						if(item.objectId){
-							var objectId = item.objectId;
-							delete item.objectId;
-							delete item.updatedAt;
-							delete item.createdAt;
-							delete item.syncError;
-							$http.put(parseUrl + ds.params.className + '/' + objectId, item).success(function(data) {
-								item.objectId 	= change.doc.objectId;
-								item.createdAt 	= change.doc.createdAt;
-								item.updatedAt 	= data.updatedAt;
-								item._id 		= item.ref;
-								item._rev 		= item.rev;
-								delete item.ref;
-								delete item.rev;
-								ds.db.put(item)
-							}).error(function(e) {
-								alert('There was an error updating an existing item in parse DB.')
-								item.syncError 	= e;
-								item._id 		= item.ref;
-								item._rev 		= item.rev;
-								delete item.ref;
-								delete item.rev;
-								ds.db.put(item)
-							})
-						}else{
-							$http.post(parseUrl + ds.params.className, item).success(function(data) {
-								item.objectId 	= data.objectId;
-								item.createdAt 	= data.createdAt;
-								item._id 		= item.ref;
-								item._rev 		= item.rev;
-								delete item.ref;
-								delete item.rev;
-								ds.db.put(item)
-							}).error(function(e) {
-								alert('There was an error creating new item in parse DB.')
-								item.syncError 	= e;
-								item._id 		= item.ref;
-								item._rev 		= item.rev;
-								delete item.ref;
-								delete item.rev;
-								ds.db.put(item)
-							})
-						}
+		
+		//LISTEN FOR REMOTE CHANGES
+		ds.fire.on("child_added", function(snapshot) {
+			if(ds.state.sync !== 'initial'){
+				var snap = snapshot.val();
+				ds.db.get(snap.localId).then(function(doc){
+					console.log(snap, doc)
+					if(doc.updatedAt !== snap.updatedAt)
+						if(snap.localDb == ds.params.hash)
+							privateTools.syncFromParse(doc)
+						else
+							ds.state.data = 'parseChange'
+				}).catch(function(error){
+					//Item does not exist in DB --- fetch full query for re-sync
+					ds.state.data = 'parseChange'
+				})
+			}
+		});
+		ds.fire.on("child_changed", function(snapshot) {
+			if(ds.state.sync !== 'initial'){
+				var snap = snapshot.val();
+				ds.db.get(snap.localId).then(function(doc){
+					if(doc.updatedAt !== snap.updatedAt)
+						privateTools.syncFromParse(doc)
+				}).catch(function(error){
+					//Item does not exist in DB --- fetch full query for re-sync
+					ds.state.data = 'parseChange'
+				})
+			}else{
+				//Full sync is already in progress... re-check when done...
+			}
+		});
+		
+		var privateTools = {
+			init: function(){
+				ds.db.info().then(function (r) {
+					if(r.doc_count == 0)
+						privateTools.syncAllFromParse()
+				})
+			},
+			waitForOthers: function(){
+				var deferred = $q.defer();
+				var promises = [];
+				for(var i=0; i<ds.dependencies.length; i++)
+					promises.push(ds.dependencies.object.upToDate())
+				$q.all(promises).then(function(){
+					deferred.resolve('Everyone is ready.');
+				});
+				return deferred.promise;
+			},
+			syncToParse: function(doc){
+				var deferred = $q.defer();
+				var item = angular.copy(doc);
+				item.ref = item._id;
+				item.rev = item._rev;
+				delete item._id;
+				delete item._rev;
+				delete item.local;
+				delete item.syncError;
+				
+				if(item.objectId){
+					var objectId = item.objectId;
+					delete item.objectId;
+					delete item.updatedAt;
+					delete item.createdAt;
+					$http.put(parseUrl + ds.params.className + '/' + objectId, item).success(function(data) {
+						item.objectId 	= doc.objectId;
+						item.createdAt 	= doc.createdAt;
+						item.updatedAt 	= data.updatedAt;
+						item._id 		= item.ref;
+						item._rev 		= item.rev;
+						delete item.ref;
+						delete item.rev;
+						ds.db.put(item).then(function(r){
+							ds.state.data = 'clean';
+							ds.state.sync = 'upToDate';
+							$rootScope.$broadcast(ds.params.hash, 'upToDate');
+							var fireRef = ds.fire.child(item.objectId);
+							fireRef.set({
+								localDb: 	ds.params.hash,
+								objectId: 	item.objectId,
+								localId: 	r.id,
+								updatedAt: 	item.updatedAt,
+							});
+							deferred.resolve('Sync Complete');
+						})
+					}).error(function(e) {
+						item.syncError 	= e;
+						item._id 		= item.ref;
+						item._rev 		= item.rev;
+						delete item.ref;
+						delete item.rev;
+						ds.db.put(item)
+						deferred.reject(e)
+					})
+					return deferred.promise;
+				}else{
+					$http.post(parseUrl + ds.params.className, item).success(function(data) {
+						item.objectId 	= data.objectId;
+						item.createdAt 	= data.createdAt;
+						item.updatedAt 	= data.createdAt;
+						item._id 		= item.ref;
+						item._rev 		= item.rev;
+						delete item.ref;
+						delete item.rev;
+						ds.db.put(item).then(function(r){
+							ds.state.data = 'clean';
+							ds.state.sync = 'upToDate';
+							$rootScope.$broadcast(ds.params.hash, 'upToDate');
+							var fireRef = ds.fire.child(item.objectId);
+							fireRef.set({
+								localDb: 	ds.params.hash,
+								objectId: 	item.objectId,
+								localId: 	r.id,
+								updatedAt: 	item.updatedAt,
+							});
+							deferred.resolve('Sync Complete');
+						})
+					}).error(function(e) {
+						item.syncError 	= e;
+						item._id 		= item.ref;
+						item._rev 		= item.rev;
+						delete item.ref;
+						delete item.rev;
+						ds.db.put(item)
+						deferred.reject(e)
+					})
+				}
+			},
+			syncFromParse: function(doc){
+				//Go through the DB and find existing, replace data and re-save
+				console.log('doc', doc)
+				$http.get('https://api.parse.com/1/classes/'+ds.params.className+'/'+doc.objectId).then(function(response){
+					console.log('parseItem', response)
+				});
+			},
+			syncAllFromParse: function(){
+				$http.get('https://api.parse.com/1/classes/'+ds.params.className).then(function(response){
+					var list = response.data.results;
+					// for(var i=0; i<list.length; i++)
+						// tools. []TODO
+						var item = list[i]
+						ds.db.get(snap.localId).then(function(doc) {
+							if (doc.updatedAt !== snap.updatedAt)
+								if (snap.localDb == ds.params.hash)
+									privateTools.syncFromParse(doc)
+								else
+									ds.state.data = 'parseChange'
+						}).catch(function(error) {
+							//Item does not exist in DB --- fetch full query for re-sync
+							ds.state.data = 'parseChange'
+						})
 					}
 				});
+			},
+			saveLocally: function(item){
+				
+			}
 		}
-		
+		ds.upToDate = function(){
+			var deferred = $q.defer();
+			if(ds.state.sync == 'upToDate')
+				deferred.resolve();
+			else
+				$rootScope.$on(ds.params.hash, function(event, data){
+					if(data == 'upToDate')
+						deferred.resolve();
+				});
+			return deferred.promise;
+		}
 		ds.tools = {
 			// Listen, Sync, 
 			item: {
@@ -930,12 +1044,19 @@ app.factory('Dados', function($q, $rootScope, $http, config, Auth){
 					return deferred.promise;
 				},
 				save: function(item){
-					//Save locally >>> then update parse.
 					var deferred = $q.defer();
-					item.local = true;
 					if(!item._id)
 						item._id = Math.floor((Math.abs(Math.sin(moment().format('x')) * 2000000000000)) % 2000000000000).toString(36);
-					ds.db.put(item)
+					ds.state.sync = 'localChange';
+					ds.db.put(item).then(function(r){
+						ds.db.get(item._id).then(function(doc){
+							privateTools.syncToParse(doc).then(function(result){
+								alert('Saved Successfully!')
+							}, function(error){
+								console.error(error);
+							})
+						})
+					})
 					return deferred.promise;
 				},
 				delete: function(item){
@@ -947,8 +1068,14 @@ app.factory('Dados', function($q, $rootScope, $http, config, Auth){
 			},
 			relations: {
 				
+			},
+			destroy: function(){
+				if(confirm('Are you sure you want to destroy this DB?  All data could be lost.')){
+					ds.db.destroy()
+				}
 			}
 		}
+		privateTools.init();
 		return ds;
 	}
 

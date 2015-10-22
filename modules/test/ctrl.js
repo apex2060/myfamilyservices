@@ -3,6 +3,7 @@ app.lazy.controller('TestCtrl', function($rootScope, $scope, Dados){
     
     testData.tools.item.list().then(function(l){
         $scope.list = l;
+        it.l = l;
     })
     
 	it.dado = Dados
