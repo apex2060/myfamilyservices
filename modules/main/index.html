@@ -1,3 +1,8 @@
-<div ng-controller="MainCtrl">
-	<div ng-repeat="element in manifest" ng-include="'partials/'+element.type+'.html'"></div>
-</div>
+<div ng-controller="MainCtrl" class="container">
+	<div><h1>Welcome!</h1></div>
+	<div class="row cards">
+	    <div class="col-md-4 card" ng-repeat="p in workers">
+	        <h1>{{p.name.first}} Person</h1>
+	    </div>
+	</div>
+</div>s

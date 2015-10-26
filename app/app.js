@@ -9,9 +9,9 @@ app.config(function($routeProvider,$compileProvider,$controllerProvider,$provide
 		service: 	$provide.service,
 	};
 
-	var parent 		= ['scalehouse', 'equipment', 'operations']
+	var parent 		= []
  	// :module/index.html		>	:module/ctrl.js
-	var child		= ['admin', 'employee', 'communication']
+	var child		= ['admin']
 	// :module/:view/index.html	> 	:module/:view/ctrl.js
 	var sibbling	= ['main']
 	// :module/:view.html		> 	:module/ctrl.js
@@ -22,11 +22,6 @@ app.config(function($routeProvider,$compileProvider,$controllerProvider,$provide
 	function requires($q, module, view, id){
 		var deferred = $q.defer();
 		var includes = [];
-		
-		if(module=='employee'){
-			includes.push('vendor/jSignature/flashcanvas.js')
-			includes.push('vendor/jSignature/jSignature.min.js')
-		}
 		
 		
 		if(parent.indexOf(module) != -1)

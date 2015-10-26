@@ -15,50 +15,6 @@ app.factory('Easy', function ($http, $q, $timeout, $sce, config) {
 		mapLink: function(geo){
 			return 'http://maps.google.com/maps?q='+geo.latitude+','+geo.longitude
 		},
-		weather: function(city){
-			var weather = this;
-				weather.errors = [];
-			weather.temperature = function(){
-				return weather.data.main.temp;
-			}
-			weather.sunrise = function(){
-				if(weather.data && weather.data.sys){
-					var sunrise = weather.data.sys.sunrise
-					return moment(moment.utc().seconds(sunrise).diff(moment())).format('h:mm')
-				}
-			}
-			weather.sunset = function(){
-				if(weather.data && weather.data.sys){
-					var sunset = weather.data.sys.sunset
-					return moment(moment.utc().seconds(sunset).diff(moment())).format('h:mm')
-				}
-			}
-			weather.load = function(city){
-				if(city){
-					weather.city = city;
-					$http.post(config.parse.root+'/functions/weather', {location: weather.city}).success(function(data){
-						weather.data = data.result;
-						if(data.result.weather){
-							console.log('weather for: '+city)
-							weather.icon = '//openweathermap.org/img/w/'+weather.data.weather[0].icon+'.png';
-						}else{
-							console.log('error'+weather.errors.length)
-							weather.errors.push(data)
-							var wait = 1000*weather.errors.length*weather.errors.length;
-							if(weather.errors.length<10)
-								$timeout(function(){
-									weather.load(city)
-								}, wait);
-						}
-					}).error(function(response){
-							console.error('Weather error', response)
-					})
-				}
-			}
-			
-			if(city)
-				weather.load(city);
-		},
 		elements: function(){
 			var element = this;
 			element.list = {};
