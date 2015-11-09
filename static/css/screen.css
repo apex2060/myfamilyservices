@@ -2,35 +2,43 @@ body {
 	background-image: url('/static/img/bg_repeat.jpg');
 	background-repeat: repeat;
 }
+
 header {
 	position: fixed;
 	height: 60px;
 	z-index: 1000;
 }
+
 *[ng-click] {
 	cursor: pointer;
 }
+
 header img.profile {
 	height: 30px;
 	margin: -15px 0px;
 	border-radius: 3px;
 }
+
 section.view {
 	padding: 120px 0px 60px 0px;
 }
 
-.container{
+.container {
 	border-radius: 3px;
 }
-	.container .carousel{
-		margin-top: 40px;
-		box-shadow: 15px 40px 90px #000;
-	}
-.white{
+
+.container .carousel {
+	margin-top: 40px;
+	box-shadow: 15px 40px 90px #000;
+}
+
+.white {
 	background: #EEE;
 }
 
+
 /* CARD */
+
 .weather {
 	margin: -50px auto 0px;
 	width: 110px;
@@ -43,21 +51,23 @@ section.view {
 	border: 3px solid #FFF;
 	text-align: center;
 }
+
 .front {
 	box-shadow: 1px 1px 3px #000;
 }
+
 map {
 	display: block;
 	width: 100%;
 	height: 300px;
 }
+
 .card .footer {
 	position: absolute;
 	width: 100%;
 	bottom: 10px;
 	left: 0px;
 }
-
 
 .drawer {
 	position: fixed;
@@ -68,9 +78,12 @@ map {
 	border-top: 2px solid #000;
 	z-index: 1000000;
 }
-.drawer *:not(input,textarea) {
+
+.drawer *:not(input,
+textarea) {
 	color: #FFF;
 }
+
 .drawer .close {
 	position: absolute;
 	top: -25px;
@@ -80,11 +93,12 @@ map {
 	background: #FFF;
 }
 
-.tab-pane>.row{
+.tab-pane>.row {
 	margin-top: 30px;
 }
 
-.gray, .grey{
+.gray,
+.grey {
 	-webkit-filter: grayscale(100%);
 	filter: grayscale(100%);
 	filter: gray;
@@ -93,89 +107,116 @@ map {
 
 
 /*Overrides*/
-h1,h2,h3,h4,h5,h6{
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
 	color: #FFF;
 }
-.well h1,.well h2,.well h3,.well h4,.well h5,.well h6
-.card h1,.card h2,.card h3,.card h4,.card h5,.card h6{
+
+.well h1,
+.well h2,
+.well h3,
+.well h4,
+.well h5,
+.well h6 .card h1,
+.card h2,
+.card h3,
+.card h4,
+.card h5,
+.card h6 {
 	color: #222;
 }
-#wrapper{
+
+#wrapper {
 	position: relative;
 	margin-top: -79px;
 }
 
-#wrapper.toggled #sidebar-open{
+#wrapper.toggled #sidebar-open {
 	position: absolute;
 	left: 5px;
 	top: 5px;
 	z-index: 1000;
 }
-	#wrapper:not(.toggled) #sidebar-open{
-		display: none;
-	}
-#wrapper #sidebar-close{
+
+#wrapper:not(.toggled) #sidebar-open {
+	display: none;
+}
+
+#wrapper #sidebar-close {
 	position: absolute;
 	left: 200px;
 	top: 5px;
 	z-index: 1000;
 }
-	#wrapper.toggled #sidebar-close{
-		display: none;
-	}
-	
-.navbar-brand{
+
+#wrapper.toggled #sidebar-close {
+	display: none;
+}
+
+.navbar-brand {
 	width: 250px;
 	white-space: nowrap;
 }
-.sidebar-nav .bread{
+
+.sidebar-nav .bread {
 	margin-top: 5px;
 }
-.sidebar-nav .bread a{
+
+.sidebar-nav .bread a {
 	display: inline;
 	color: #d9230f;
 	font-size: 16px;
 }
 
-.center *{
+.center * {
 	text-align: center;
 }
-.underline{
+
+.underline {
 	border-bottom: 1px solid #000;
 }
-.px150{
+
+.px150 {
 	height: 150px;
 	width: 150px;
 }
 
-.r3 table{
+.r3 table {
 	margin-top: 50px;
 }
 
-.hide{
+.hide {
 	display: none;
 }
-.parent:hover .hide, .parent:active .hide{
+
+.parent:hover .hide,
+.parent:active .hide {
 	display: block !important;
 }
-.alerts{
+
+.alerts {
 	position: fixed;
 	bottom: 30px;
 	right: 10px;
 	width: 25%;
 }
 
-.noscreen{
+.noscreen {
 	display: none !important;
 }
 
-
-.receipt .signature{
+.receipt .signature {
 	width: 150px;
 	margin: -50px;
 	position: relative;
 	left: 50px;
 }
+
 .receipt .well.tag h1 {
 	font-size: 14px;
 	font-weight: bold;
@@ -184,12 +225,27 @@ h1,h2,h3,h4,h5,h6{
 	color: #888 !important;
 }
 
-
-.fancy{
+.fancy {
 	text-align: center;
-	text-shadow: 5px 5px 5px #222;
+	text-shadow: 5px 5px 5px #FFF;
 	color: #000;
 	height: 500px;
 	line-height: 500px;
-	font-weight: bold;
+}
+
+.banner {
+	background: #0099FF;
+	padding: 15px;
+	box-shadow: -5px -5px 5px #003366;
+	color: #FFF !important;
+}
+
+.center {
+	text-align: center;
+}
+
+.cards .card {
+	margin: 3px;
+	box-shadow: -2px -2px 15px #110;
+	text-align: center;
 }

@@ -1,8 +1,28 @@
-<div ng-controller="MainCtrl" class="container">
-	<div><h1>Welcome!</h1></div>
-	<div class="row cards">
-	    <div class="col-md-4 card" ng-repeat="p in workers">
-	        <h1>{{p.name.first}} Person</h1>
-	    </div>
+<div ng-controller="MainCtrl" class="container well">
+	<div class="row">
+		<div class="col-md-4">
+			<img src="/static/images/KISS.png" class="img-responsive"></img>
+		</div>
+		<div class="col-md-8">
+			<h1>Serving everyone we can!</h1>
+			<div class="list-group">
+				<a ng-href="#/services/{{s.objectId}}" class="list-group-item" ng-repeat="s in srvcs">{{s}}</a>
+			</div>
+		</div>
 	</div>
-</div>s
+	<hr>
+	<div class="row">
+		<div class="col-md-12">
+			<img src="/static/images/Playground.jpg" class="img-responsive"></img>
+		</div>
+	</div>
+	<div class="row cards">
+		<h1 class="banner center">Our Staff</h1>
+		<div class="col-md-4" ng-repeat="t in team">
+			<div class="card">
+				<h1>{{t.name.first}} {{t.name.last}}</h1>
+				<img class="img-responsive thumbnail" ng-src="{{t.picture.large}}"></img>
+			</div>
+		</div>
+	</div>
+</div>
