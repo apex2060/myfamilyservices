@@ -4,7 +4,6 @@
 			<img src="/static/images/KISS.png" class="img-responsive"></img>
 		</div>
 		<div class="col-md-8">
-			<h1>Serving everyone we can!</h1>
 			<div class="list-group">
 				<a ng-href="#/services/{{s.objectId}}" class="list-group-item" ng-repeat="s in srvcs">{{s}}</a>
 			</div>
@@ -12,10 +11,13 @@
 	</div>
 	<hr>
 	<div class="row">
-		<div class="col-md-12">
-			<img src="/static/images/Playground.jpg" class="img-responsive"></img>
-		</div>
+		<div ng-repeat="element in manifest" ng-include="'partials/'+element.type+'.html'"></div>
+		<!--<div class="col-md-12">-->
+			<!--<img src="/static/images/house.jpg" class="img-responsive"></img>-->
+		<!--	<div ng-include="'partials/carousel.html'"></div>-->
+		<!--</div>-->
 	</div>
+	{{manifest}}
 	<div class="row cards">
 		<h1 class="banner center">Our Staff</h1>
 		<div class="col-md-4" ng-repeat="t in team">
